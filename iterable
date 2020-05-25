@@ -1,0 +1,19 @@
+def my_range(start,end):
+    current=start
+    while current < end:
+        yield current
+        current += 1
+
+nums=my_range(1,10)
+
+for num in nums:
+    print(num)
+
+list=[1,2,3]
+for i in range(len(list)):
+    print(list[i])
+
+a=iter(list)
+print(a)  # give the address of the iterator
+
+print(next(a))
