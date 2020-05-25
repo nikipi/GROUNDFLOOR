@@ -1,0 +1,4 @@
+def is_Power_of_two(n):        
+  return n > 0 and (n & (n - 1)) == 0
+  
+  # if n&(n-1)==0 then the number if the power of 2
