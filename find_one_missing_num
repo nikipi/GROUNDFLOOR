@@ -1,0 +1,8 @@
+def missing_number(num_list):
+    num_list=sorted(num_list)
+    return sum(range(num_list[0],num_list[-1]+1)) - sum(num_list)
+
+    return num
+a=[1,2,4]
+
+print(missing_number(a))
