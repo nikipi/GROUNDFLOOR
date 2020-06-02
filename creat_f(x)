@@ -1,0 +1,4 @@
+import numpy as np
+f=np.poly1d([1,2,3])
+f
+f(2)
