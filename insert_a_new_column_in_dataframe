@@ -1,0 +1,1 @@
+data.insert(0,'Ones',1) #inset(column index,'column name', real number)
