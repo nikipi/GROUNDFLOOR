@@ -1,0 +1,7 @@
+n=15
+
+times=pd.data_range('2017-05-20 00:00',freq='1min',periods=n)
+
+df=pd.Dataframe({'time':times,'value':np.range(n)})
+
+df.set_index('time').resample('5min')
