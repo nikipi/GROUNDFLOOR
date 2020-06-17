@@ -1,0 +1,4 @@
+a=[1,4,5,80,5]
+index=[0,1,4]
+np.take(a,index)
+#numpy.take(a, indices, axis=None, out=None, mode='raise'）
