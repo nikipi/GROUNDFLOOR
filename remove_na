@@ -1,0 +1,3 @@
+
+x=x[~np.isnan(y)]
+y=y[~np.isnan(y)]
