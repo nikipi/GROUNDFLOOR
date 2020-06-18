@@ -9,3 +9,6 @@ def plot_df(df, x, y, title="", xlabel='Date', ylabel='Value', dpi=100):
     plt.show()
 
 plot_df(df, x=df.index, y=df.value, title='Monthly anti-diabetic drug sales in Australia from 1992 to 2008.')    
+
+
+# the plot will be automatically resampled yearly
