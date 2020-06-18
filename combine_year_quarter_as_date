@@ -1,0 +1,21 @@
+  
+import pandas as pd
+
+data=pd.read_csv('/Users/apple/Desktop/macrodata.csv')
+
+print(data.head())
+
+'''
+data=data.loc[:,['realgdp','infl','unemp']]
+print(data.head())
+'''
+
+periods=pd.PeriodIndex(year=data.year,quarter=data.quarter,name='date')
+
+columns=pd.Index(['realgdp','infl','unemp'],name='item')
+
+data=data.reindex(columns=columns)
+
+data.index=periods.to_timestamp('D','end')
+
+print(data.head())
