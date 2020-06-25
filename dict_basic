@@ -1,0 +1,15 @@
+rivers = {
+    'nile': 'egypt',
+    'yellow': 'china',
+    'zhu': 'china'
+}  ##  dictionary     item/// key/// value
+for river, country in rivers.items():
+    print(river.title() + " is in " + country.title())
+
+for river in rivers.keys():
+    print(river.title())
+
+for country in rivers.values():
+    print(country.title())
+
+print("\n")
