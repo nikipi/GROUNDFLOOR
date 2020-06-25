@@ -1,0 +1,53 @@
+asked = {
+    'bob' : 'python',
+    'tan' : 'c++'
+}
+should_ask = ['tan', 'bob', 'wang', 'jack']
+
+for people in should_ask:
+    if people in asked.keys():
+        print(people.title()+" "+ 'thank you')
+    else:
+        print(people.title()+" "+ 'please join us')
+        
+rivers = {
+    'nile' : 'egypt',
+    'yellow' : 'china',
+    'zhu' : 'china'
+}
+for river, country in rivers.items():
+    print(river.title() + " is in " + country.title())
+ 
+for river in rivers.keys():
+    print(river.title())
+ 
+for country in rivers.values():
+    print(country)
+
+pet_list = [
+    {'animal': 'dog', 'owner': 'jack'},
+    {'animal': 'cat', 'owner': 'phd'}
+]
+for pet in pet_list:
+    print("This pet's name is " + pet['animal'].title())
+    print("\tIts owner is " + pet['owner'].title())
+cities = {
+    'Beijing': {
+        'country': 'china',
+        'population': 'a lot',
+        'fact': 'capital'},
+    'London': {
+        'country': 'england',
+        'population': 'a lot',
+        'fact': 'capital'},
+    'Guiyang': {
+        'country': 'china',
+        'population': 'a little',
+        'fact': 'nice'},
+}
+
+for city, fact in cities.items():
+    print(city.title() + " infromation:")
+    for member, information in fact.items():
+        print("\t" + member.title() + " : " + information.title())
+
