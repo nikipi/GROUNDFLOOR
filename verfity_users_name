@@ -1,0 +1,10 @@
+
+current_users = ['thinker', 'bai', 'bus driver', 'admin', 'ryoma']
+new_users = ['good man', 'Bai', 'adMin', 'bad driver', 'phd']
+
+for name in new_users:
+    if name.lower() in current_users:
+        print(name + 'is used')
+    else:
+        print("ok" + ' '+ name)
+
