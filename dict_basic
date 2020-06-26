@@ -13,3 +13,17 @@ for country in rivers.values():
     print(country.title())
 
 print("\n")
+
+
+sandwich_orders = ['good', 'black', 'white', 'tuna', 'black']
+finished_sandwiches = []
+while len(sandwich_orders) > 0:
+    sandwich = sandwich_orders.pop()
+    print("I made your " + sandwich + " sandwich")
+    finished_sandwiches.append(sandwich)
+print("All the sandwiches I made are: ")
+for sandwich in finished_sandwiches:
+    print("\t" + sandwich)
+print('\n')
+
+
