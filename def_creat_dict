@@ -1,0 +1,44 @@
+def make_shirt(size='big', word='DEFAULT'):
+    print("Make shirt: ")
+    print("\tSize: " + size)
+    print("\tWord: " + word)  ## IF THERE IS NO INPUT THEN WILL OUTPUT THE DEFAULT
+
+
+make_shirt('big', 'I love Python')
+make_shirt('big')
+make_shirt('middle')
+make_shirt('big', 'I love C++')
+
+
+
+def make_album(singer, album_name, number=''):
+    album = {}
+    album['Singer'] = singer
+    album['Album Name'] = album_name
+    if number:
+        album['Number of songs'] = number
+    return album
+
+
+print(make_album('JJ Lin', 'Caocao', '1'))
+print(make_album('Jay Chow', 'Fantasy'))
+
+def show_magicians(magicians):
+    for magician in magicians:
+        print(magician.title())
+
+
+def make_great(magicians):
+    for i in range(0, len(magicians)):
+        magicians[i] = "Great " + magicians[i].title()
+    return magicians
+### simple one
+
+# for magician in magicians:
+#     print('Great'+ ' '+ magician.title())
+
+magicians = ['tom', 'judy', 'bob']
+great_magicians = make_great(magicians[:])
+show_magicians(magicians)
+print("\n")
+show_magicians(great_magicians)
