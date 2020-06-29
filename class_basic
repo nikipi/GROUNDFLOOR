@@ -1,0 +1,76 @@
+#
+class Restaurant_serve():
+    def __init__(self, restaurant_name, cuisine_type):
+        self.restaurant_name = restaurant_name
+        self.cuisine_type = cuisine_type
+        self.number_served=0
+
+    def describe_restaurant(self):
+        print(self.restaurant_name+' with ' + self.cuisine_type)
+
+    def open_restaurant(self):
+        print('Restaurant is openning')
+
+    def set_number_served(self,num):
+         self.number_served = num
+         print('Number reserved is '+ str(num))
+
+    def increment_number_served(self):
+        self.number_served += 1
+#
+# new=Restaurant_serve('KFC', 'Fast food')
+# new.describe_restaurant()
+# new.open_restaurant()
+#
+# new.set_number_served(500)
+# new.increment_number_served()
+#
+# print("Now, number reserved is " + str(new.number_served))
+# print("\n")
+
+class IceCreamStand(Restaurant_serve):
+    def __init__(self,restaurant_name,cuisine_type,flavors):
+        self.restaurant_name = restaurant_name
+        self.cuisine_type = cuisine_type
+        self.flavors= flavors
+
+    def show_flavors(self):
+        print('the flavors are:')
+        for flavor in self.flavors:
+            print('\t'+flavor)
+
+good_ice = IceCreamStand('dadice','ice',['sweet','bitter'])
+good_ice.show_flavors()
+print("\n")
+
+# class IceCreamStand():
+#     def __init__(self,restaurant_name,cuisine_type,flavors):
+#         super().__init__(restaurant_name, cuisine_type)   ## super().__int__() heritage
+#         self.flavors=flavors
+#
+#     def show_flavors(self):
+#         print('the flavors are:')
+#         for flavor in self.flavors:
+#             print('\t'+flavor)
+#
+# good_ice = IceCreamStand('dadice','ice',['sweet','bitter'])
+# good_ice.show_flavors()
+# print("\n")
+
+from random import randint
+
+
+class Die():
+    def __init__(self, side):
+        self.side = side
+
+    def roll_die(self):
+        x = randint(1, self.side)
+        print("  " + str(x))
+
+
+for side in [6, 10, 20]:
+    die = Die(side)
+    print("Side: " + str(side))
+    for i in range(1, 11):
+        die.roll_die()
