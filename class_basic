@@ -34,6 +34,48 @@ class IceCreamStand(Restaurant_serve):
         self.cuisine_type = cuisine_type
         self.flavors= flavors
 
+
+class Role(object):
+    def __init__(self,name):
+        self.name = name
+
+    def attack(self, enemy):
+        enemy.life_value -= self.power
+
+class People(Role):
+    power= 10
+    life_value=100
+
+    def __int__(self,name):
+        super().__int__(name)
+
+class Dog(Role):
+    power=15
+    life_value=80
+
+    def __int__(self,name):
+        super().__int__(name)
+
+p1=People('Tom')
+p1=People('Niki')
+
+d1=Dog('animal')
+
+print(p1.life_value)
+print(d1.power)
+
+d1.attack(p1)
+
+print(p1.life_value)
+
+'''
+
+2个角色，人和狗，游戏开始后，生成2个人，3条狗，互相混战
+人被狗咬了会掉血，狗被人打了也掉血，狗和人的攻击力，具备的功能都不一样。
+注意，请按题14领域建模的方式来设计类。
+'''
+
+
     def show_flavors(self):
         print('the flavors are:')
         for flavor in self.flavors:
