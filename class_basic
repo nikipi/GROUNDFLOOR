@@ -116,3 +116,24 @@ for side in [6, 10, 20]:
     print("Side: " + str(side))
     for i in range(1, 11):
         die.roll_die()
+       
+       
+import ssl
+from collections import Counter 
+ssl._create_default_https_context = ssl._create_unverified_context
+
+class Read():
+    def __init__(self,url):
+        self.url = url
+        self.df=pd.read_csv(url,sep='\\t',engine='python')
+    def hd(self):
+        return self.df.head()
+    def db(self):
+        print(self.df.describe())
+    def info(self):
+        print(self.df.info())
+    def null(self):
+        print(self.df.isnull().sum())
+    def drop(self):
+        self.df=self.df.dropna()
+
