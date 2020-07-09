@@ -1,0 +1,4 @@
+missing_continents={'Korea':'Asia','Russian Federation': 'Europe',
+'Slovak Republic': 'Europe'}
+merged['Country'].map(missing_continents)
+merged['Continent']=merged['Continent'].fillna(merged['Country'].map(missing_continents))
