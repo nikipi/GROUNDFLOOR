@@ -11,3 +11,6 @@ print( [m+n for m in 'ABC' for n in '123'])
 L = ['Hello', 'World', 'IBM', 'Apple']
 
 print([item.lower() for item in L])
+
+array = [[ [0 for col in range(8)] for col in range(5)] for row in range(3)]
+print(array)
