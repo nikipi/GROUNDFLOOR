@@ -1,0 +1,19 @@
+L = ['apples', 'bananas', 'oranges']
+for idx, val in enumerate(L):
+  print("index is %d and value is %s" % (idx, val))
+
+L = [('Matt', 20), ('Karim', 30), ('Maya', 40)]
+for idx,val in enumerate(L):
+    name=val[0]
+    age=val[1]
+    print('index is %d,name is %s, and age is %d' %(idx,name,age))
+
+str='fuckyou'
+for idx,ch in enumerate(str):
+    print("index is %d and character is %s" %(idx,ch))
+
+
+# you can set the start index as you want
+L = ['apples', 'bananas', 'oranges']
+for idx,s in enumerate(L,start=1):
+    print('index is %d and the value is %s' %(idx,s))
