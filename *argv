@@ -5,3 +5,12 @@ def myFun(arg1, *argv):
 
 
 myFun('Hello', 'Welcome', 'to', 'GeeksforGeeks')
+
+
+
+def foreach(*name):
+    for one in name:
+        print('hello'+' ' +one)
+
+foreach('Bob','Anna','niki')
+
