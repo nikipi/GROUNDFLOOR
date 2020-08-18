@@ -137,3 +137,18 @@ class Read():
     def drop(self):
         self.df=self.df.dropna()
 
+
+class Person:
+  def name(self, name):
+            self.name = name
+            return self
+ 
+  def age(self, age):
+    self.age = age
+    return self
+
+  def show(self):
+       print("My name is", self.name, "and I am", self.age, "years old.")
+
+p = Person()
+p.name("Li Lei").age(15).show()
