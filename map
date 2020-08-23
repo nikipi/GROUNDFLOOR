@@ -1,4 +1,13 @@
+# map is a good way to fill or replace the data that meet certain requirement you set---
+
 missing_continents={'Korea':'Asia','Russian Federation': 'Europe',
 'Slovak Republic': 'Europe'}
 merged['Country'].map(missing_continents)
 merged['Continent']=merged['Continent'].fillna(merged['Country'].map(missing_continents))
+
+
+#将-8转换为3
+train['happiness'] = train['happiness'].map(lambda x: 3 if x==-8 else x)
+
+train['happiness'] = train['happiness'].map(lambda x:x-1)
+# minus one for each row of this column
