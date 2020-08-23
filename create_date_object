@@ -3,3 +3,9 @@ import pandas as pd
 idx=pd.period_range('2011','2018',freq='Q')
 
 print(idx)
+
+
+idx = pd.period_range('2011', periods=10, freq='Q')
+idx
+
+——————real practice: https://learnku.com/articles/28037___
