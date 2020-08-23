@@ -1,0 +1,5 @@
+import pandas as pd
+
+idx=pd.period_range('2011','2018',freq='Q')
+
+print(idx)
