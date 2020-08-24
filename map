@@ -11,3 +11,26 @@ train['happiness'] = train['happiness'].map(lambda x: 3 if x==-8 else x)
 
 train['happiness'] = train['happiness'].map(lambda x:x-1)
 # minus one for each row of this column
+
+
+def birth_split(x):
+    if 1920<=x<=1930:
+        return 0
+    elif  1930<x<=1940:
+        return 1
+    elif  1940<x<=1950:
+        return 2
+    elif  1950<x<=1960:
+        return 3
+    elif  1960<x<=1970:
+        return 4
+    elif  1970<x<=1980:
+        return 5
+    elif  1980<x<=1990:
+        return 6
+    elif  1990<x<=2000:
+        return 7
+    
+data["birth_s"]=data["birth"].map(birth_split)
+
+# use map for dataframe
