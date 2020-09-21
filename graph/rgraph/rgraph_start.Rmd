@@ -1,0 +1,47 @@
+---
+title: "graph_start"
+author: "yulu niki"
+date: "9/21/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+require(ggplot2)
+data(diamonds)
+set.seed(42)
+small <- diamonds[sample(nrow(diamonds), 1000), ]
+head(small)
+```
+
+```{r}
+p<-ggplot(data=small,mapping=aes(x=carat,y=price,shape=cut))
+p+geom_point()
+```
+
+```{r}
+ggplot(small)+geom_histogram(aes(x=price, fill=cut))
+```
+
+* or you can paint it side by side
+
+```{r}
+ggplot(small)+geom_histogram(aes(x=price, fill=cut),position='dodge')
+```
+```{r}
+ggplot(small)+geom_histogram(aes(x=price, fill=cut),position='fill')
+```
+
+```{r}
+ggplot(small)+geom_bar(aes(x=cut,fill=cut))+coord_flip()
+```
+
+```{r}
+ggplot(small)+geom_bar(aes(x=cut,fill=cut))+coord_flip()
+```
