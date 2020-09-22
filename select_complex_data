@@ -1,0 +1,36 @@
+import plotly_express as px
+import pandas as pd
+gapminder = px.data.gapminder()
+
+print(gapminder.info())
+
+data=gapminder.loc[(gapminder['year']== 2007) | (gapminder['year']== 1967),['country', 'year', 'lifeExp']]
+
+## & and (meet two request at the same time)   | or (meet either one)
+
+## df.loc[(df['']& | (df[''),[select columns]].sort_values([],ascending=False)
+
+print(data)
+
+df=pd.pivot(data, index= 'country', columns='year',values='lifeExp')
+
+df=df.reset_index()
+
+print(df.columns)
+
+df['gap']=df[2007]-df[1967]
+
+print(df.sort_values(['gap'],ascending=False))
+
+''' this is for r code
+
+dumbbell_df <- gapminder %>%
+  filter(year == 1967 | year == 2007) %>%
+  select(country, year, lifeExp) %>%
+  spread(year, lifeExp) %>%
+  mutate(gap = `2007` - `1967`) %>%
+  arrange(desc(gap)) %>%
+  head(10)
+  
+  '''
+
