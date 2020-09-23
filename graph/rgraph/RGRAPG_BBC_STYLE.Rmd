@@ -1,0 +1,216 @@
+---
+title: "Untitled"
+author: "yulu niki"
+date: "9/23/2020"
+output: pdf_document
+---
+
+```{r}
+library(dplyr)
+library(gapminder)
+library(bbplot)
+library(ggplot2)
+```
+
+# line
+```{r}
+line_df<-gapminder %>% filter(country == 'China')
+
+```
+
+```{r}
+
+line <-ggplot(line_df,aes(x=year, y=lifeExp))+
+  geom_line(colour = '#1380A1',size=1)+
+  geom_hline(yintercept = 0,size=1,colour="#333333")+
+  bbc_style()+
+  labs(title="Living longer",
+       subtitle = "Life expectancy in China 1952-2007")
+
+line 
+
+```
+# multiple line chart
+```{r}
+
+multiplr_line_df <- gapminder %>%
+  filter(country == 'China' | country == 'India')
+
+mul_plot<- ggplot(multiplr_line_df,
+                  aes(x=year,y=lifeExp,colour= country))+
+  geom_line(size=1)+
+  geom_hline(yintercept = 0,size=1,colour="#333333")+scale_colour_manual(values = c("#FAAB18", "#1380A1"))+ bbc_style()+
+  labs(title="Living longer",
+       subtitle = "Life expectancy in China and the US")
+  
+
+mul_plot
+
+
+```
+
+# make a bar chart
+```{r}
+
+bar_df <- gapminder %>% 
+  filter(year==2007 & continent=='Africa') %>%
+  arrange(desc(lifeExp)) %>%
+  head(5)
+
+bars <- ggplot(bar_df, aes(x = country, y = lifeExp)) +
+  geom_bar(stat="identity", 
+           position="identity", 
+           fill="#1380A1") +
+  geom_hline(yintercept = 0, size = 1, colour="#333333") +
+  bbc_style() +
+  labs(title="Reunion is highest",
+       subtitle = "Highest African life expectancy, 2007")
+
+bars
+```
+```{r}
+stacked_df <- gapminder %>% 
+  filter(year == 2007) %>%
+  mutate(lifeExpGrouped= cut(lifeExp,
+                             breaks=c(0,50,65,80,90),
+                             labels=c('Under 50','50-65','65-80','80+'))) %>%
+  group_by(continent,lifeExpGrouped) %>%
+  summarise(continentPop = sum(as.numeric(pop)))
+           
+stacked_df
+
+stacked_bars <- ggplot(data = stacked_df, 
+                       aes(x = continent,
+                           y = continentPop,fill = lifeExpGrouped
+                           )) +
+  geom_bar(stat = "identity", 
+           position = "fill") +
+  bbc_style() +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_viridis_d(direction = -1) +
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  labs(title = "How life expectancy varies",
+       subtitle = "% of population by life expectancy band, 2007") +
+  theme(legend.position = "top", 
+        legend.justification = "left") +
+  guides(fill = guide_legend(reverse = TRUE))
+
+stacked_bars
+
+if{FALSE}
+{  PYTHON CODE FOR THE SAME SHIT
+  
+  import plotly_express as px
+import pandas as pd
+
+gapminder = px.data.gapminder()
+
+
+
+data=gapminder.loc[(gapminder['year']== 2007),['lifeExp','pop','country','continent']]
+
+data['lifeExpGrouped']=pd.cut(data['lifeExp'],[0,50,65,80,90],labels=['Under 50','50-65','65-80','80+'])
+
+data=data.groupby(['continent','lifeExpGrouped']).sum()['pop']
+
+print(data.reset_index())
+
+  
+  
+}
+
+```
+
+
+
+* position = "fill" will draw your stacks as proportions, and position = "identity" will draw number values.
+
+```{R}
+
+library('tidyr')
+grouped_bar_df <- gapminder %>%
+  filter(year == 1967 | year == 2007) %>%
+  select(country, year, lifeExp) %>%
+  spread(year, lifeExp) %>%
+  mutate(gap = `2007` - `1967`) %>%
+  arrange(desc(gap)) %>%
+  head(5) %>%
+  gather(key = year, 
+         value = lifeExp,
+         -country,
+         -gap) 
+  
+#Make plot
+grouped_bars <- ggplot(grouped_bar_df, 
+                       aes(x = country, 
+                           y = lifeExp,fill = as.factor(year)
+                           )) +
+  geom_bar(stat="identity", position="dodge") +
+  geom_hline(yintercept = 0, size = 1, colour="#333333") +
+  bbc_style() +
+  scale_fill_manual(values = c("#1380A1", "#FAAB18")) +
+  labs(title="We're living longer",
+       subtitle = "Biggest life expectancy rise, 1967-2007")
+
+grouped_bars
+
+
+```
+# Make a dumbbell chart only in R
+
+```{r}
+
+library("ggalt")
+library("tidyr")
+
+#Prepare data
+dumbbell_df <- gapminder %>%
+  filter(year == 1967 | year == 2007) %>%
+  select(country, year, lifeExp) %>%
+  spread(year, lifeExp) %>%
+  mutate(gap = `2007` - `1967`) %>%
+  arrange(desc(gap)) %>%
+  head(10)
+
+#Make plot
+ggplot(dumbbell_df, aes(x = `1967`, xend = `2007`, y = reorder(country, gap), group = gap)) + 
+  geom_dumbbell(colour = "#dddddd",
+                size = 3,
+                colour_x = "#FAAB18",
+                colour_xend = "#1380A1") +
+  bbc_style() + 
+  labs(title="We're living longer",
+       subtitle="Biggest life expectancy rise, 1967-2007")
+
+
+```
+
+# Anotation
+
+```{r}
+mul_line_plot<-mul_line_plot + geom_label(aes(x = 1980, y = 45, label = "I'm an annotation!"), 
+                           hjust = 0, 
+                           vjust = 0.5, 
+                           colour = "#555555", 
+                           fill = "white", 
+                           label.size = NA, 
+                           family="Helvetica", 
+                           size = 6)+ geom_segment(aes(x = 1979, y = 45, xend = 1965, yend = 43), 
+                             colour = "#555555", 
+                             size=0.5)
+mul_line_plot
+
+if {FALSE}
+
+{
+  For a curved line, use geom_curve instead of geom_segment
+  
+  geom_curve(aes(x = 1979, y = 45, xend = 1965, yend = 43), 
+                           colour = "#555555", 
+                           curvature = -0.2,
+                           size=0.5)
+  
+  
+  
+}
+```
