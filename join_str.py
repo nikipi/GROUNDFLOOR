@@ -6,3 +6,9 @@ b=('I','am','angry')
 c="!"
 f=c.join(b)
 print(f)
+
+mark="~"
+
+words=['I','am','so','free']
+
+print(mark.join(words))
