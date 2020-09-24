@@ -152,3 +152,38 @@ class Person:
 
 p = Person()
 p.name("Li Lei").age(15).show()
+
+
+
+class Restaurant_serve():
+    def __init__(self, restaurant_name, cuisine_type):
+        self.restaurant_name = restaurant_name
+        self.cuisine_type = cuisine_type
+        self.number_served=0
+
+    def show_all(self):
+        print('the food we have in geneva are:')
+        for name, food in self.restaurant_name,self.cuisine_type:
+            print(name + ' offers ' + food)
+
+class IceCreamStand(Restaurant_serve):
+    def __init__(self,restaurant_name,cuisine_type,flavors):
+        # self.restaurant_name = restaurant_name
+        # self.cuisine_type = cuisine_type
+        self.flavors= flavors
+
+
+
+    def show_flavors(self):
+        print('the flavors are:')
+        for flavor in self.flavors:
+            print('\t'+flavor)
+
+
+
+good_ice = IceCreamStand('dadice','ice',['sweet','bitter'])
+good_ice.show_flavors()
+print("\n")
+
+geneva_food=Restaurant_serve(['KFC','Junk food'],['JiaWei','Chinese food'])
+geneva_food.show_all()
