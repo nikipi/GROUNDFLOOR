@@ -1,0 +1,172 @@
+---
+title: "data_management"
+author: "yulu niki"
+date: "9/28/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+party <-c("Conservative Party","Labour Party","Scottish National Party","Liberal Democrats","Democratic Unionist Party","Sinn Féin")
+leader <-c("Theresa May","Jeremy Corbyn","Nicola Sturgeon","Tim Farron","Arlene Foster","Gerry Adams")
+votes <-c(42.4,40.0,3.0,7.4,0.9,0.7)
+seats <-c(317,262,35,12,10,7)
+seats_change <-c(-13,30,-21,4,2,3)
+uk2017 <-data.frame(party, leader, votes, seats, seats_change)
+uk2017 
+```
+```{r}
+library('dplyr')
+select(uk2017,contains('seat'))
+select(uk2017,votes,everything())
+# everything()  move a variable to the begining of the dataframe
+
+filter(uk2017, !party %in% c('Conservative Party','Sinn Féin'))
+arrange(uk2017,desc(votes))
+
+rename(uk2017,party_name=party)
+
+mutate(uk2017,seats_prop=seats/sum(seats))
+```
+
+```{r}
+
+uk2017 %>% 
+  select(party,votes) %>%
+  filter(seats_change >0 )
+
+library('tidylog')
+
+uk2017 %>%
+  tidylog::select(party,votes) %>%
+  tidylog::filter(seats_change >0 )
+
+```
+
+```{r}
+
+uk2017 %>% filter(seats_change>0) %>%
+  select(votes,seats) %>%
+  apply(MARGIN=2,FUN=mean,na.rm=TRUE)
+
+
+# OR YOU CAN USE
+  
+  uk2017%>%filter(seats_change>0)%>%select(votes, seats)%>%apply(2, mean)
+
+```
+
+```{r}
+uk2017 %>%
+  
+  summarize(party=n(),
+            votes_min=min(votes),
+            votes_mean=mean(votes))
+
+```
+
+```{r}
+# case_when to recode the data usually you will get a new column
+
+uk2017 %>%
+  
+  mutate(leader_new = case_when( leader =='Theresa May'~ 'Boris Johnson',
+         TRUE ~ as.character(leader))
+  )
+
+
+uk2017 %>% 
+  filter(seats_change>0) %>% 
+  pull(votes) %>%
+  mean()
+```
+
+```{r}
+
+library(ggplot2)
+library(nycflights13)
+
+btv_sea_flights_fall <-flights %>%
+  filter(origin == "JFK"&(dest == "BTV"|dest == "SEA") &month >=10)
+
+head(btv_sea_flights_fall,5)
+
+many_airports <- flights %>% filter(dest %in% c('SEA','SFO','BDL'))
+
+head(many_airports,5)
+
+summary<- flights %>%
+  filter(origin=='JFK') %>%
+  summarise(mean_dep=mean(dep_time))  ###???
+
+
+summary
+```
+
+```{r}
+diamonds %>% group_by(cut) %>%
+  summarize(avg_price=mean(price))
+
+by_origin <- flights%>%
+  group_by(origin) %>%
+  summarize(count = n())
+
+by_origin
+
+by_origin_monthly <- flights %>%
+  group_by(origin,month) %>%
+  summarize(count =n())
+
+by_origin_monthly 
+
+```
+
+```{r}
+
+flights<-flights %>%
+  mutate(gain= dep_delay - arr_delay)
+
+gain_summary <- flights %>%
+  summarize(
+    
+    min=min(gain,na.rm=TRUE),
+    q1=quantile(gain,0.25,na.rm=TRUE),
+    median=quantile(gain,0.5,na.rm=TRUE),
+    q3=quantile(gain,0.75,na.rm=TRUE),
+    max=max(gain,na.rm=TRUE),
+    mean=mean(gain,na.rm=TRUE),
+    sd=sd(gain,na.rm=TRUE),
+    missing=sum(is.na(gain))
+  )
+
+gain_summary 
+
+ggplot(data=flights, mapping=aes(x=gain))+ geom_histogram(color='white',bins=20)
+
+
+```
+
+```{r}
+
+flights <-flights %>%
+  mutate(gain = dep_delay -arr_delay,
+         hours = air_time /60,
+         gain_per_hour = gain /hours  
+         )
+library(tidyverse)
+
+```
+
+```{r}
+flights_joined <- flights %>%
+  inner_join(airlines,by = 'carrier')
+
+head(flights_joined,5)
+head(flights)
+
+
+
+```
