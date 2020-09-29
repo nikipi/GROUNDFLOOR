@@ -1,0 +1,183 @@
+---
+title: "data_processing_2"
+author: "yulu niki"
+date: "9/29/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+library(tidyverse)
+library(gapminder)
+library(ggplot2)
+
+levels(gapminder$continent)
+
+nlevels(gapminder$continent)
+
+```
+
+
+
+```{r}
+gapminder %>% 
+  count(continent)
+
+h_countries <- c("Egypt", "Haiti", "Romania", "Thailand", "Venezuela")
+h_gap <- gapminder %>%
+  filter(country %in% h_countries)
+
+h_gap 
+
+```
+
+```{r}
+
+# reorder  good when draw the point graph
+
+library(forcats)
+
+gap_asia_2007 <- gapminder %>% 
+  filter(year == 2007, continent == "Asia")
+
+ggplot(gap_asia_2007,aes(x= lifeExp, y =country))+geom_point()
+
+ggplot(gap_asia_2007,aes(x=lifeExp, y= fct_reorder(country,lifeExp,.desc=TRUE)))+geom_point()
+
+ggplot(gap_asia_2007,aes(x=lifeExp, y= fct_reorder(country,lifeExp)))+geom_point()
+
+
+
+```
+
+```{r}
+
+h_countries <- c("Egypt", "Haiti", "Romania", "Thailand", "Venezuela")
+
+h_gap <- gapminder %>%
+  filter(country %in% h_countries)
+  
+
+ggplot(h_gap,aes(x=year,y=lifeExp,color=country))+
+  geom_line()
+
+ggplot(h_gap, aes(x = year, y = lifeExp,
+                  color = fct_reorder2(country, year, lifeExp))) +
+  geom_line() +
+  labs(color = "country")
+
+
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(nycflights13)
+library(knitr)
+library(skimr)
+
+
+summary_temp <- weather %>% skim()
+
+summary_temp 
+
+```
+
+```{r}
+
+mini_gap <- gapminder %>% 
+  filter(country %in% c("Belgium", "Canada", "United States", "Mexico"),
+         year > 2000) %>% 
+  select(-pop, -gdpPercap) 
+
+
+
+mini_gap
+
+food <- tribble(
+        ~ country,    ~ food,
+        "Belgium",  "waffle",
+         "Canada", "poutine",
+  "United States", "Twinkie"
+)
+
+```
+
+```{r}
+
+match (x=mini_gap$country, table=food$country)
+
+indice<-match(x=mini_gap$country, table=food$country)
+
+
+add_column(food[indice, ], x = mini_gap$country)
+
+mini_gap %>% mutate(food= food$food[indice])
+
+```
+
+```{r}
+
+jdat <- gapminder %>% 
+  filter (continent != 'Oceania') %>% 
+  mutate (country= reorder(country, -1*pop )) %>% 
+  arrange(year, country)  
+
+#  -1 * pop car in the bubble plots below, we don’t want large countries to hide small countries. 
+
+jdat
+
+jdat1 <- gapminder %>% 
+  filter(continent != "Oceania") %>% 
+  droplevels() %>% 
+  mutate(country = reorder(country, -1& pop)) %>% 
+  arrange(year, country)  
+
+jdat1
+
+
+q <- jdat %>% 
+  filter(year == 2007) %>% 
+  ggplot(aes(x = gdpPercap, y = lifeExp)) +
+  scale_x_log10(limits = c(230, 63000)) + geom_point()
+
+q
+
+```
+
+```{r}
+
+q + geom_point(pch = 21, size = 8, fill = I("darkorchid1"))
+
+q + geom_point(aes(size = pop), pch = 21)
+
+(r <- q+ geom_point(aes(size=pop),pch =21,show.legend = FALSE) +
+  scale_size_continuous(range = c(1,40)))
+
+(r <- r + facet_wrap(~ continent) + ylim(c(39, 87)))
+
+r + aes(fill = continent)
+
+r + aes(fill = country) + scale_fill_manual(values = country_colors)
+
+
+```
+
+```{r}
+
+j_year <- 2007
+jdat %>% 
+  filter(year == j_year) %>% 
+  ggplot(aes(x = gdpPercap, y = lifeExp, fill = country)) +
+  scale_fill_manual(values = country_colors) +
+  facet_wrap(~ continent) +
+  geom_point(aes(size = pop), pch = 21, show.legend = FALSE) +
+  scale_x_log10(limits = c(230, 63000)) +
+  scale_size_continuous(range = c(1,40)) + ylim(c(39, 87))
+
+
+```
