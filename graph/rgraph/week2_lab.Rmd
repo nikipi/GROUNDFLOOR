@@ -1,0 +1,184 @@
+---
+title: "regression-in-r"
+author: "yulu niki"
+date: "9/29/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(mosaic)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(broom)
+library(nycflights13)
+library(moderndive)
+library(skimr)
+library(tidyverse)
+library(gapminder)
+
+```
+
+```{r}
+
+evals_ch5 <-evals %>%
+  select(ID, score, bty_avg, age)
+
+glimpse(evals_ch5)
+
+evals_ch5 %>% 
+  sample_n(size=5)
+
+evals_ch5 %>% select(score,bty_avg)  %>%  skim()
+
+```
+
+```{r}
+
+evals_ch5 %>% 
+  get_correlation(formula= score ~ bty_avg)
+
+ggplot(evals_ch5,aes(x= bty_avg, y=score))+
+  geom_point()+
+  labs(x ="Beauty Score", y ="Teaching Score",title ="Scatterplot of relationship of teaching and beauty scores")
+
+
+
+ggplot(evals_ch5, aes(x=bty_avg,y =score)) +geom_point() +labs(x ="Beauty Score", y ="Teaching Score",title ="Scatterplot of relationship of teaching and beauty scores") +
+  geom_smooth(method='lm',se=FALSE)
+  
+
+```
+
+```{R}
+
+score_model <- lm(score ~ bty_avg, data= evals_ch5)
+
+get_regression_table(score_model)
+
+regression_point<- get_regression_points(score_model)
+
+regression_point
+
+```
+
+
+```{r}
+
+library(gapminder)
+gapminder2007 <-gapminder %>%
+  filter(year ==2007) %>%
+  select(country, lifeExp, continent, gdpPercap)
+
+gapminder2007 %>%  skim()
+
+ggplot(gapminder2007, aes(x=lifeExp)) + 
+  geom_histogram(binwidth =5 ,color ='white') + 
+  labs(x ="Life expectancy", y ="Number of countries",title ="Histogram of distribution of worldwide life expectancies")
+
+ggplot(gapminder2007, aes(x=lifeExp)) + 
+  geom_histogram(binwidth =5 ,color ='white') + 
+  labs(x ="Life expectancy", y ="Number of countries",title ="Histogram of distribution of worldwide life expectancies") + facet_wrap (~ continent, nrow=2)
+
+
+```
+
+```{r}
+
+ggplot(gapminder2007, aes(x = continent, y = lifeExp) )+ geom_boxplot() +
+         labs(x ="Continent", y ="Life expectancy",title ="Life expectancy by continent")
+
+
+gapminder2007 %>% 
+  group_by(continent) %>%  skim()
+
+
+lifeExp_model <- lm(lifeExp ~ continent, data=gapminder2007)
+
+get_regression_table(lifeExp_model)
+
+
+regression_points<- get_regression_points(lifeExp_model,ID='country')
+
+regression_points
+
+get_regression_points(lifeExp_model)
+
+# baseline for comparison” continent Africa (the intercept) a
+
+```
+
+
+
+# week 2 lab
+```{r}
+library(rio)
+
+dat_elections <- import("http://www.parlgov.org/static/data/development-utf-8/view_election.csv")
+
+summary(dat_elections)
+
+table(dat_elections$country_name)
+
+table(dat_elections$election_type)
+
+```
+
+```{r}
+library(tidyverse)
+
+dat_ireland <- filter(dat_elections,country_name == 'Ireland')
+
+dat_ireland 
+
+dat_ireland2 <- dat_elections %>% 
+  filter(country_name=='Ireland')
+
+dat_ireland2
+
+min(dat_ireland$vote_share,na.rm=TRUE)
+mean(dat_ireland$vote_share,na.rm=TRUE)
+median(dat_ireland$vote_share,na.rm=TRUE)
+max(dat_ireland$vote_share,na.rm=TRUE)
+
+nrow(dat_ireland)
+
+
+dat_ireland_national <- dat_ireland %>% 
+  filter(election_type== 'parliament')
+
+
+
+```
+
+## Visualising Data
+
+
+```{r}
+
+ggplot(dat_ireland_national,aes(x=party_name_short,y=vote_share))+
+  geom_boxplot()
+
+ggplot(dat_ireland_national,aes(x=vote_share))+
+  geom_histogram()
+```
+
+
+```{r}
+
+dat_ff<-filter(dat_ireland_national,party_name == "Fianna Fáil")
+
+ggplot(dat_ff,aes(x=as.Date(election_date),
+                  y=vote_share)) +
+  geom_point()
+
+ggplot(dat_ff,aes(x=as.Date(election_date),
+                  y=vote_share))+
+  geom_point()+
+  geom_line()
+
+```
