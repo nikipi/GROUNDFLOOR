@@ -17,3 +17,21 @@ for idx,ch in enumerate(str):
 L = ['apples', 'bananas', 'oranges']
 for idx,s in enumerate(L,start=1):
     print('index is %d and the value is %s' %(idx,s))
+    
+    
+data= [1,2,-3,-4]
+
+for idx,num in enumerate(data):
+    print('index:', idx,'number',num)
+    print('index is %d and the value is %s' %(idx,num))
+    
+
+
+
+for idx,num in enumerate(data):
+    if num < 0:
+        data[idx] =0
+
+
+print(data)
+
