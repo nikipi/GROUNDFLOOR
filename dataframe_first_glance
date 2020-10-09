@@ -1,0 +1,21 @@
+import ssl
+from collections import Counter 
+ssl._create_default_https_context = ssl._create_unverified_context
+import pandas as pd
+
+def first_dive(url):
+    data=pd.read_csv(url,sep='\\t',engine='python')
+    
+    print(data.info())
+    
+    print('\n')
+    
+    print("**Let's see if there are any null data in the dataframe \n",data.isnull().sum())
+    
+    print('\n')
+    
+    print('**the statistical details of each variables \n',data.describe())
+    
+    print('\n')
+    
+    print("**first five rows of the dataframe \n", data.head())
