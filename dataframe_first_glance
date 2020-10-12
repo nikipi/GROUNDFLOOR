@@ -1,5 +1,6 @@
 import ssl
 from collections import Counter 
+
 ssl._create_default_https_context = ssl._create_unverified_context
 import pandas as pd
 
@@ -10,12 +11,43 @@ def first_dive(url):
     
     print('\n')
     
-    print("**Let's see if there are any null data in the dataframe \n",data.isnull().sum())
+    print("**Let's see if there are any null data in the dataframe** \n",data.isnull().sum())
     
     print('\n')
     
-    print('**the statistical details of each variables \n',data.describe())
+    print('**the statistical details of each variables** \n',data.describe())
     
     print('\n')
     
-    print("**first five rows of the dataframe \n", data.head())
+    print("**first five rows of the dataframe** \n", data.head())
+    
+#     all_columns=list(data)
+
+# numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
+
+# newdf = df.select_dtypes(include=numerics)
+    
+    num = data.select_dtypes('number')
+    
+    num_column = list(num)
+    
+    for col in num_column:
+        
+        num.hist(column=col)
+        
+       
+                    
+    objects= data.select_dtypes('object')
+    
+    obj=list(objects)
+    
+    
+    print('\n')
+    
+    print('**the top 5 common elements for the non-numerics variable**')
+    print('\n')
+    
+    for cols in obj:
+        print(objects[cols].value_counts()[0:5])
+        print('\n')
+       
