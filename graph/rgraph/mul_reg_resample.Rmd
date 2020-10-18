@@ -1,0 +1,302 @@
+---
+title: "multiplt reg"
+author: "yulu niki"
+date: "10/5/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+
+library(tidyverse)
+library(moderndive)
+library(skimr)
+library(ISLR)
+
+evals_ch6 <- evals %>% 
+  select(ID,score,age,gender)
+
+summary(evals_ch6)
+
+evals_ch6 %>% skim()
+```
+```{r}
+
+evals_ch6 %>%  get_correlation( formula= score ~ age)
+
+
+ggplot(evals_ch6,aes(x=age,y=score,color=gender))+
+  geom_point()+
+  labs(x="Age",y="Teaching Score",color="Gender")+
+  geom_smooth(method='lm',se=FALSE)
+
+ggplot(evals_ch6,aes(x=age,y=score,color=gender))+
+  geom_point()+
+  labs(x="Age",y="Teaching Score")+
+  geom_smooth(method='lm')
+
+
+```
+```{R}
+
+# 分组回归
+
+score_model_interaction <- lm(score ~ age * gender,data=evals_ch6)
+
+get_regression_table(score_model_interaction)
+
+
+```
+
+*** Look into the table
+Since the word female comesalphabetically before male, female instructors are the “baseline for comparison” group.Thus, intercept is the intercept for only the female instructors.the intercept for the male instructors is intercept + gendermale = 4.883 + (-0.446) = 4.883- 0.446 = 4.437.
+
+
+```{r}
+
+
+library(ISLR)
+credit_ch6 <-Credit %>% 
+  select(ID, debt = Balance, credit_limit = Limit, income = Income, credit_rating = Rating, age = Age)
+
+
+credit_ch6 %>%select(debt, credit_limit, income) %>%skim()
+
+credit_ch6 %>% select(debt,credit_limit,income) %>% 
+  cor()
+
+debt_model <- lm(debt ~ credit_limit + income,data=credit_ch6)
+
+get_regression_table(debt_model)
+  
+get_regression_points(debt_model)
+
+# while in isolation, the relationship between debt and income may bepositive, when taking into account credit_limit as well, this relationship becomesnegative. T
+
+
+
+
+```
+```{r}
+
+library('poliscidata')
+
+states<-states
+
+reg_obama <- lm(obama2012 ~ abort_rate08, data=states)
+
+summary(reg_obama)
+```
+```{r}
+
+library('broom')
+
+reg_table1 <- tidy(reg_obama)
+
+reg_table1
+
+reg_obama_aug <- augment(reg_obama)
+
+# we also want to save predictions and residuals based on our model. To do this, wecan use the function augment(). 
+
+head(reg_obama_aug)
+
+
+```
+```{r}
+
+library(ggplot2)
+
+ggplot(reg_obama_aug, aes(x=abort_rate08,y=obama2012))+
+# actual point    predicted line
+  geom_point() + geom_line(aes(x=abort_rate08,y=.fitted))
+
+
+
+
+ggplot(reg_obama_aug, aes(x=abort_rate08,y=obama2012))+
+  geom_segment(aes(xend=abort_rate08,y=obama2012,yend=.fitted),colour='red')+
+  geom_point()+ geom_line(aes(x=abort_rate08,y=.fitted))
+
+# geom_segment  (from actual to predcition)
+
+
+```
+
+```{r}
+
+reg_obama_full <- lm(obama2012~ abort_rate08 + density, data= states)
+
+
+summary(reg_obama_full)
+
+# further calculate the 95% confidence intervals for the estimates
+
+reg_obama_full_tidy <- tidy(reg_obama_full) %>% 
+  mutate(ci_low= estimate-1.96*std.error,
+         ci_high= estimate + 1.96*std.error)
+
+reg_obama_full_tidy
+
+
+```
+
+```{r}
+
+# residual plot
+
+
+reg_fortify <- fortify(reg_obama_full)
+
+
+ggplot(reg_fortify, aes(x=.fitted,y=.resid))+
+  geom_point()+
+  geom_hline(yintercept=0)+
+  geom_smooth(se=FALSE)+
+  labs(title='Residuals',
+       y="Residuals",
+       x='Fitted values')
+
+
+```
+
+## Bagging
+```{r}
+library(tidyverse)
+library(moderndive)
+library(infer)
+
+resample_35_times <- pennies_sample %>% 
+  rep_sample_n(size=50,replace=TRUE,reps=35)
+
+
+
+resamples_means <- resample_35_times %>% 
+  group_by(replicate) %>% 
+  summarize(mean_year=mean(year))
+resamples_means
+```
+
+```{r}
+
+ggplot(resamples_means,aes(x=mean_year))+ 
+  geom_histogram(binwidth=1,color='white',boundary=1990)+
+  labs(x='Resample mean year')
+
+
+
+```
+
+
+
+```{r}
+
+pennies_sample %>% 
+  rep_sample_n(size=50,replace = TRUE,reps=1000) %>% 
+  group_by(replicate) %>% 
+  summarize(stat=mean(year))
+
+# infer workflow
+
+boostrap<-pennies_sample %>% 
+  specify(response=year) %>% 
+   generate(reps=1000) %>% 
+  calculate(stat='mean')
+
+visualize(boostrap)
+
+
+# specify---generate --- calculate --- visualize
+
+```
+
+```{r}
+
+
+percentile_ci<- boostrap %>% 
+  get_confidence_interval(level=0.95,type='percentile')
+
+percentile_ci
+
+
+
+visualize(boostrap)+
+  shade_confidence_interval(endpoints=percentile_ci)
+
+visualize(boostrap)+shade_ci(endpoints=percentile_ci,color='hotpink',fill='khaki')
+
+
+```
+```{r}
+
+x_bar<-boostrap %>% 
+  summarize(mean=mean(stat))
+
+
+standard_error_ci<- boostrap %>% 
+  get_confidence_interval(type='se',point_estimate=x_bar)
+
+
+visualize(boostrap) +shade_confidence_interval(endpoints=standard_error_ci)
+
+
+```
+```{r}
+library(tidyverse)
+library(moderndive)
+
+ggplot(data = flights, mapping = aes(x = carrier)) + 
+  geom_bar()
+
+ggplot(data=flights, aes(x=carrier,fill=origin))+
+  geom_bar()
+
+
+ggplot(data=flights,aes(x=carrier,fill=origin))+
+  geom_bar(position ='dodge')
+
+#We can make one tweak to the position argument to get them to be the same size in terms of width as the other bars 
+#by using the more robust position_dodge() function.
+
+
+ggplot(data=flights,aes(x=carrier,fill=origin))+
+  geom_bar(position=position_dodge(preserve='single'))
+
+
+
+ggplot(data=flights,aes(x=carrier))+geom_bar()+
+  facet_wrap(~origin,ncol=1)
+
+```
+
+```{r}
+
+ball_resample<- bowl %>% 
+  rep_sample_n(size=50,reps=33) %>% 
+  mutate(is_red=(color=='red')) %>% 
+  summarize(num_red = sum(is_red)) %>% 
+  mutate(prop_red=num_red/50)
+
+ball_resample
+
+ggplot(ball_resample,aes(x=prop_red))+
+  geom_histogram(binwidth=0.05, boundary = 0.4,color = "white") +
+  labs(x = "Proportion of 50 balls that were red", 
+       title = "Distribution of 33 proportions red") 
+
+#  Recall that setting boundary = 0.4 ensures a binning scheme with one of the bins’ boundaries at 0.4. 
+
+
+
+
+
+```
