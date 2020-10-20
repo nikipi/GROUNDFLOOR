@@ -1,0 +1,9 @@
+data <- gapminder %>% filter(year=="2007") %>% mutate(gdpperca=gdp/population) %>% select(-year)
+
+g4<- ggplot(data,aes(x=gdpperca,y=life_expectancy,p,size=population,color=continent))+
+  ylim(30,90)+
+  geom_point(alpha=0.7)+bbc_style()+
+  labs(title = "Money affects how long we live?",
+       subtitle = "GDP percap VS life expectancy , 2007")+
+  geom_hline(yintercept = 30, size = 1, colour = "#333333")+  theme(legend.position = "right" ,legend.text  = element_text(size = 10))
+       
