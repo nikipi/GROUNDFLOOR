@@ -1,0 +1,158 @@
+---
+title: "POL40950: Introduction to Statistics"
+subtitle: 'Lab Session: Week 4'
+author: "Module Coordinator: [Stefan Müller](https://muellerstefan.et)"
+date: "12 October 2020"
+output: 
+ html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Today, we use a dataset containing information on presidential vote shares in US elections and the average income growth in the year before an election. The data come from Gelman et al (2020). We can load the dataset directly from a URL. The data are also stored on Brightspace.
+
+```{r,message=FALSE, warning=FALSE}
+library(tidyverse)
+# data source
+# https://github.com/avehtari/ROS-Examples/tree/master/ElectionsEconomy
+
+# read data frame from URL (dataset is also on Brightspace)
+url_data <- "https://raw.githubusercontent.com/avehtari/ROS-Examples/master/ElectionsEconomy/data/hibbs.dat"
+
+dat_us <- read.table(url_data, header = TRUE)
+head(dat_us)
+```
+
+## Summary Statistics
+
+1. Calculate summary statistics of `vote` using the `summary()`
+
+```{r}
+
+summary(dat_us$vote)
+
+```
+
+2. Calculate summary statistics of `growth` using the `summary()` function.
+
+```{r}
+
+summary(dat_us$growth)
+
+```
+
+## Correlation and Scatterplot
+
+1. Use `cor()` to estimate the correlation betweeen `vote` and `growth`. Note that the syntax is: `cor(name_of_data_frame$name_of_first_variable, name_of_data_frame$name_of_second_variable)`. 
+
+```{r}
+
+cor(dat_us$vote,dat_us$growth)
+
+```
+
+
+
+2. Create a scatter plot (as a **ggplot2** object) with growth on the x-axis and vote share on the y-axis. You can use `geom_point()`. 
+
+```{r}
+
+library(ggplot2)
+
+theme_set(theme_bw(base_size = 12))
+
+ggplot(dat_us,aes(x=growth,y=vote,color=year))+geom_point(size=5)
+
+
+```
+
+3. Include a linear regression line in this plot by adding `+ geom_smooth()` and set the `method` argument in the function to `"lm"`. 
+
+```{r}
+
+ggplot(dat_us,aes(x=vote,y=growth,color=year))+geom_point(size=5)+
+  geom_smooth(se=FALSE,method=lm)+
+  labs(x='Growth',y='Vote')
+
+
+
+```
+
+
+## Regression
+
+Next, we explore the `lm()` function to run a linear regression
+
+`lm()` works in the following way: `lm(y ~ x, data = name_of_data_frame)`.
+
+1. Run a linear regression with vote share as the dependent variable and growth as the independent variable. Store the object as `lm_vote_growth`. 
+
+```{r}
+
+lm_vote_growth <-lm(vote ~ growth,data=dat_us)
+
+```
+
+2. Use `summary(lm_vote_growth)` and interpret the output. Find the intercept and coefficient for growth in the model output. 
+
+```{r}
+
+summary(lm_vote_growth)
+
+```
+
+**If you and your group finished these exercises, please write "Group XY finished exercises" in the chat.**
+
+## BONUS: Additional Independent and Control Variables
+
+Today, we used `growth` as the only independent variable If you have finished the tasks above, use the Mentimeter for today and write down at least one additional variable that could influence vote share for US presidents (i.e which variable(s) should be added to the model)?
+
+- menti.com
+- Code: 91 55 05
+
+
+## BONUS: Arrange a Dataset by Variable Values
+
+`arrange()` arranges a data frame based on numerical values or alphabetically. 
+
+1. Arrange the data frame by vote share (lowest vote share as the first observation) and store the object as a new object called `dat_us_votes`. 
+```{r}
+dat_us_votes <- dat_us %>% 
+arrange(-vote)
+
+
+## (-vote)   reorder it in descending order
+# descending order  arrange(-vote)
+
+head(dat_us_votes)
+```
+
+2. Use `View(dat_us_votes)` and explore the data frame. Which president had the lowest vote share? Which president had the highest vote share?
+
+**Note**: If you want to reorder a data frame in descending order (highest value first), add a minus before the variable (e.g. `arrange(-votes)`)).
+
+
+# residuals for each observation
+```{r}
+
+dat_us <- dat_us %>% 
+    mutate(predicted=predict(lm_vote_growth),
+           residuals=residuals(lm_vote_growth))
+
+ggplot(dat_us,aes(x=growth,y=vote))+
+  geom_smooth(method='lm',se=FALSE)+
+  geom_point(size=3)+
+  geom_segment(aes(xend=growth,yend=predicted))+
+  geom_point(aes(y=predicted),shape=1,size=3)+
+  labs(x = "Average recent growth in personal income", 
+         y = "Incumbent party's vote share") 
+
+
+
+```
+
