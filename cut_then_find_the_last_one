@@ -1,0 +1,88 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[2]:
+
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+
+
+# In[39]:
+
+
+path = 'https://s3-api.us-geo.objectstorage.softlayer.net/cf-courses-data/CognitiveClass/DA0101EN/automobileEDA.csv'
+df = pd.read_csv(path)
+df.info()
+
+
+# In[4]:
+
+
+# 选price来处理
+df.price.describe()
+
+
+# In[21]:
+
+
+# 分组，并且将分的组不同标记
+df['price_group']=pd.cut(df.price, bins=[5117.0,5118+5000,5118+10000,5118+15000,
+                                         5118+20000,5118+25000,5118+30000,5118+35000,45400],
+                        
+                        labels=["1","2","3","4","5","6","7","8"])
+
+
+# In[22]:
+
+
+df['price_group'].describe()
+
+
+# In[23]:
+
+
+df=df[['price',"price_group"]]
+
+
+# In[27]:
+
+
+# 确定分的组没什么问题
+df.isnull().sum()
+
+
+# In[33]:
+
+
+# 将price从大到小排序，并确定替换
+df.sort_values(['price'],inplace=True)
+
+
+# In[36]:
+
+
+# find the biggest number for each group, and find its index
+index=df.groupby(["price_group"]).tail(1).index.tolist() 
+
+
+# In[40]:
+
+
+# 可以用一个loop把满足另一个条件的index筛选出来
+a=[]
+for i in index:
+    if df.loc[i,'drive-wheels']=='rwd':
+        a.append(i)
+
+
+# In[41]:
+
+
+a
+
+
+# In[ ]:
