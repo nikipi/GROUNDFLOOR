@@ -1,0 +1,29 @@
+import random
+
+## (SELF,NAME) name is something that you need to put
+class cube(object):
+    def __init__(self,name):
+        self.name=name
+    def query(self):
+        return('I am a cube, my name is: ' + self.name)
+
+class dimension():
+    def __init__(self):
+        self.width =20
+        self.height =20
+
+
+class colorwithdimension(cube,dimension):
+    def __init__(self,name):
+        self.color = random.choice(['BLUE', 'RED', 'PURPLE'])
+        cube.__init__(self,name)
+        dimension.__init__(self)
+
+    def Query(self):
+        return super().query()+ (' my color is: ' + self.color ) + '\n' + ('My Dimensions are: WIDTH:' +
+                                                                           str(self.width) + ' HEIGHT:' + str(self.height))
+
+
+
+colorcube1= colorwithdimension('BOB')
+print(colorcube1.Query())
