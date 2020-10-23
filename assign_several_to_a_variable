@@ -1,0 +1,23 @@
+product = "book"
+price = 18.95
+if product != "book":
+ print("The product is not a book")
+else:
+ print("The product is a book")
+
+if product == "book" and price > 15:
+ print("The product is an expensive book")
+elif product == "book":
+ print("The product is a cheap book")
+else:
+ print("The product is not a book")
+
+is_cheap_book = product == "book" and price > 15
+print(is_cheap_book)
+
+
+age=5
+gender='F'
+
+jack = age > 3 and gender=='M'
+print(jack)
