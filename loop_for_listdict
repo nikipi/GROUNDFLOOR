@@ -1,0 +1,125 @@
+#Write a function that takes a parameter N and returns a list of N voters at random (x,y) coordinates. 
+#The list of voters should be a list of lists, with each voter having an x and y coordinate, respectively.
+
+import random
+def n_voter(n):
+    voter_list=[]
+    i=0
+    while i<n:
+        i=i+1
+        x=random.randint(1,10)
+        y=random.randint(1,10)
+        coordination=(x,y)
+        voter_list.append(coordination)
+    return voter_list
+
+print(n_voter(2))
+
+# Write a function that loops over a list of parties and returns the nearest party, 
+# using the distance function from earlier exercises. The list of parties should be a list of dictionaries, 
+# with each party described as: {"name": "...", "x": ..., "y": ...}
+
+parties=[{ "name": "party1", "x":4, "y": 5 },
+         {"name": "party2", "x":5, "y": 7 },
+          {"name": "party3", "x":6, "y": 8 }
+
+        ]
+
+
+# parties={ "party1":{'x':3,"y":5},"party3":{'x':4,"y":1}
+# }
+
+
+import math
+
+
+def nearest(x,y):
+    distance=[]
+    i=0
+    for i in range(len(parties)):
+        x1=parties[i]['x']
+        y1=parties[i]['y']
+        distance.append(math.sqrt((x-x1)**2+(y-y1)**2))
+        i+=i
+        index=distance.index(min(distance))
+    print("the neartest part is", parties[index]['name'],'the distance is', format(distance[index],'.1f' )    )
+    
+    
+    
+    
+ #  Write a function that loops over a list of voters and returns a list of party names 
+#with for each voter the nearest party, using the previous function.
+
+voter=[{ "name": "voter1", "x":3, "y": 5 },
+         {"name": "voter2", "x":1, "y": 7 },
+          {"name": "voter3", "x":6, "y": 10 }
+
+        ]
+
+parties=[{ "name": "party1", "x":4, "y": 5 },
+         {"name": "party2", "x":5, "y": 7 },
+          {"name": "party3", "x":6, "y": 8 }
+
+        ]
+
+def nearest_for_many(a):
+    for i in range(len(a)):
+        x=a[i]['x']
+        y=a[i]['y']
+        nearest(x,y)
+        
+        # Take the code you wrote for Question 3 in the previous homework. 
+# Write a program that asks the user to enter the number of parties
+# then generates random parties at random locations, 
+# and prints a list of parties and their location.
+
+
+def generate_party():
+    n=int(input('enter a number to creat party:'))
+    party=[]
+    i =0
+    while i < n:
+        i=i+1
+        x=random.randint(1,10)
+        y=random.randint(1,10)
+        coordination=(x,y)
+        party.append(coordination)
+    return  party
+    
+    
+    
+ def generate_voter():
+    n=int(input('enter a number to create voter:'))
+    voter=[]
+    i =0
+    while i < n:
+        i=i+1
+        x=random.randint(1,10)
+        y=random.randint(1,10)
+        coordination=(x,y)
+        voter.append(coordination)
+    return  voter
+    
+   
+  parties=generate_party()
+
+def nearest_final(x,y):
+    distance=[]
+    i=0
+    
+    
+    for i in range(len(parties)):
+        x1=parties[i][0]
+        y1=parties[i][1]
+        distance.append(math.sqrt((x-x1)**2+(y-y1)**2))
+        i+=i
+        index=distance.index(min(distance))
+    print("the neartest part is No", index,'the distance is', format(distance[index],'.1f' )    )
+    
+    
+   def nearest_for_many():
+    a=generate_voter()
+    for i in range(len(a)):
+        x=a[i][0]
+        y=a[i][1]
+        nearest_final(x,y)
