@@ -12,3 +12,14 @@ mark="~"
 words=['I','am','so','free']
 
 print(mark.join(words))
+
+n = 2
+s = "Programming"
+
+print(s * n)
+
+string = 'Hello There'
+print (
+    (s+' ')*2
+)
+
