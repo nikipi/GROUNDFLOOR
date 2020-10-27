@@ -80,5 +80,16 @@ S = zip(M, L)
 # zip like stapler
 
 
+array = [['a', 'b'], ['c', 'd'], ['e', 'f']]
+transposed = list(zip(*array))
+print(transposed)
+
+b = ["red", "green", "blue"]
+f = ["strawberry", "kiwi", "blueberry"]
+
+# simply think that zip is transpose the list
+print(dict(zip(b, f)))
+
+# transfer two list to dict  ---think it like transpose
 
 
