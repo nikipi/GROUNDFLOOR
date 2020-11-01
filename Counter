@@ -1,0 +1,21 @@
+from collections import Counter
+
+c1 = Counter([2,3,1,2,3,5,3,6,7,9,5,3,4,5,6,4,3,4,6])
+c2 = Counter("gjfjadlfggfkgd;fkgd,fgfsfdjsfj")
+
+print(c1)
+print(c2)
+
+print(c2.most_common(5))
+
+print(c2['d'])
+
+text = "I really really like you, i hope you can understand"
+
+text.replace(',','')
+word_counter= Counter(text.split(' '))
+print(word_counter.most_common(3))
+
+a=[1,3,4,5]
+
+print(a[::-1])
