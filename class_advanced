@@ -12,6 +12,10 @@ class Die(object):
     def getValue(self):
               return self.value
               
+d1,d2=Die(),Die()
+for n in range(12):
+    print(d1.roll(),d2.roll())
+              
               
               
 class Circle(object):
@@ -43,3 +47,39 @@ c.set_radius(2)
 c.set_center(-1,3)
 
 print(c)
+
+
+class myStruct():
+    def __init__(self, name, salary, doB, title):
+        self.name = name
+        self.salary = salary
+        self.doB = doB
+        self.title = title
+
+name = raw_input('Enter name: ')
+salary = raw_input('Enter salary: ')
+doB = raw_input('Enter doB: ')
+title = raw_input('Enter title: ')
+
+new_object = myStruct(name, salary, dob, title)
+
+class myStruct():
+    def __init__(self,name=None,salary=None,doB=None,title=None):
+        if not name:
+            self.name = raw_input('Enter name: ')
+        else:
+            self.name=name
+        if not salary:
+            self.salary = raw_input('Enter salary: ')
+        else:
+            self.salary=salary
+        if not soB:
+            self.doB = raw_input('Enter doB: ')
+        else:
+            self.doB=doB
+        if not title:
+            self.title = raw_input('Enter title: ')
+        else:
+            self.title=title
+
+
