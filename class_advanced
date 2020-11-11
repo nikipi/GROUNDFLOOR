@@ -1,0 +1,45 @@
+import random
+
+class Die(object):
+
+    def __init__(self):
+        self.side=6
+        self.roll()
+
+    def roll(self):
+        self.value=1+random.randrange(self.sides)
+        return self.value
+    def getValue(self):
+              return self.value
+              
+              
+              
+class Circle(object):
+    def __init__(self,name='',radius=0,x=0,y=0):
+        self.radius=radius
+        self.x=x
+        self.y=y
+        self.name=name
+    def set_center(self,x,y):
+        self.x=x
+        self.y=y
+    def set_radius(self,r):
+        self.radius=r
+    def set_name(self,s):
+        self.name=s
+    def blow_up(self,mutipliter=1.1):
+        self.radius*=mutipliter
+
+    def __repr__(self):
+        return self.name + ": " + format(self.radius, ".2f") + \
+               " at (" + format(self.x, ".2f") + \
+               "," + format(self.y, ".2f") + ")"\
+
+c=Circle()
+
+print(c)
+c.set_name('blue')
+c.set_radius(2)
+c.set_center(-1,3)
+
+print(c)
