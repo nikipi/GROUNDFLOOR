@@ -1,0 +1,177 @@
+---
+title: "POL40950: Introduction to Statistics"
+subtitle: 'Lab Session: Week 7'
+author: "Module Coordinator: [Stefan Müller](https://muellerstefan.net)"
+date: "9 November 2020"
+output: 
+ html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Today, we will reproduce the main analysis in [Klüver and Spoon (2020)](https://www.journals.uchicago.edu/doi/pdf/10.1086/708239). **In order to reproduce the analysis, you must store the replication dataset (also on Brightspace in the Lab Sessions folder) in the same folder as this Rmd file.**
+
+We will reproduce Table 1 of the paper.
+
+Let's first import the dataset.
+
+```{r, message=FALSE}
+# load rio package to import dataset stored as .dta
+library(rio)
+
+dat_parties <- import("/Users/ypi/Desktop/replication_journal_of_politics.dta")
+```
+
+
+1. Model 1 of Table 1 only includes government parties. To ensure that we are working with the correct subset, please filter only government parties `filter(cabinet_party == 1)` and store the output in a new object called `dat_gov`. How many observations are included in this filtered dataset?
+
+```{r, message=FALSE}
+library(tidyverse)
+
+dat_gov <- filter(dat_parties, cabinet_party == 1)
+
+nrow(dat_gov)
+
+# 460 observations are included, each observation is one cabinet party in one of the countries
+```
+
+
+2. Recode the variable `junior` in such a way that 1 is recoded as "Junior coalition party" and 0 as "Senior coalition party". (Solution below)
+
+```{r}
+table(dat_gov$junior)
+
+# use dplyr's recode function
+dat_gov <- dat_gov %>% 
+    mutate(junior_senior = dplyr::recode(junior,
+                                  "1" = "Junior coalition party",
+                                  "0" = "Senior coalition party"))
+
+table(dat_gov$junior_senior)
+```
+
+3. Testing the relationship between government status (junior or senior coalition party) and vote share at the next election: run a linear regression (`lm()`) with vote share at the next election (`next_pervote`) as the dependent variable, and the binary indicator of junior/senior coalition party (`junior`) as the independent variable.
+
+```{r, message=FALSE}
+lm_simple  <- lm(next_pervote ~ junior, data = dat_gov)
+
+summary(lm_simple)
+```
+
+```{r, results='asis',messag=FALSE}
+# use texreg package for nice regression table
+library(texreg)
+
+htmlreg(lm_simple)
+```
+
+3. Interpret the coefficient for `junior` in your group? Afterwards, discuss why a simple regression is not sufficient here. Which variables might be omitted and should be included?
+
+_Moving from 0 (senior party) to 1 (junior coalition party) decreases the predicted vote share at the next election by around 17 percentage points. The intercept can be interpreted as follows: a senior coalition party (because 0 = senior) has an predicted vote share of 27 percent at the upcoming next election._
+
+_Various alternative factors (apart from being a coalition party) influence vote share at elections. Klüver and Spoon discuss these control variables on pages 10-12. One example is previous vote share: if a party obtained 30 percent of the votes in election $t$ (the previous election) it is highly unlikely that the party only receives 3 percent in election $t+1$ (the next election). We need to control for such factors to get a credible estimate of the relationship between being a junior coalition party or the senior coalition party._
+
+4. Reproduce Model 1 of Table 1 by including the following variables:
+
+- Dependent variable: `next_pervote`
+- Independent variables:  `junior`, `niche_party`, `seatshare`, `policy_extreme_logit`, `conflict_logit_new`, `pervote`
+
+Do your coefficients correspond with the coefficients reported in the paper?
+
+```{r}
+lm_multiple <-  lm(next_pervote ~ junior +
+                       niche_party +
+                       seatshare + 
+                       policy_extreme_logit+ 
+                       conflict_logit_new + 
+                       pervote, 
+                   data = dat_gov)
+
+summary(lm_multiple)
+```
+
+```{r, results='asis'}
+# create a nice regression table
+texreg::htmlreg(lm_multiple, digits = 3,
+        custom.coef.names = c(
+            "Intercept",
+            "Junior coalition party (ref.: senior partner)",
+            "Niche party",
+            "Seat share",
+            "Policy extremism",
+            "Cabinet conflict",
+            "Lagged dependent variable (previous vote share)"),
+        caption = "The electoral performance of junior and senior coalition parties")
+```
+
+_Yes, the coefficient estimates are the same as the coefficients reported by Klüver and Spoon (2020). They use "Constant" instead of "Intercept", but it means the same._
+
+
+5. BONUS: Interpret the coefficient of each variable. And why does the coefficient for `junior` change so drastically when comparing it to the model you ran in Question 3?
+
+_For example: the estimate of −6.049 for junior coalition partners suggests that for any fixed values of all other independent variables, the average decrease in vote share for a junior coalition party (relative to a senior coalition party) amounts to 6.04 percentage points. Alternatively, we can state that the predicted vote share decreases by 6.04 percentage points when a party is a junior coalition party (as opposed to being the senior party), holding all other variables in the model constant._
+
+_In the second model, we control for relevant variables which puts the coefficient for `junior` into perspective. $R^2$ also increases drastically, suggesting that the control variables improve model fit._
+
+```{r}
+
+library(tidyverse)
+library(moderndive)
+library(skimr)
+library(ISLR)
+
+evals_ch6 <- evals %>%
+  select(ID, score, age, gender)
+
+
+# glimpse will show the data structure  
+glimpse(evals_ch6)
+
+evals_ch6 %>% skim()
+
+
+```
+
+```{r}
+evals_ch6 %>% get_correlation(formula=score~ age)
+
+
+ggplot(evals_ch6,aes(x=age,y=score,color=gender))+
+    geom_point()+geom_smooth(method='lm',se=F)
+    labs(x = "Age", y = "Teaching Score", color = "Gender") 
+    
+
+# fits a different regression line for each group.
+
+
+```
+
+# Interaction model
+
+```{r}
+
+score_model_interaction<-lm(score~age*gender,data=evals_ch6)
+
+
+get_regression_table(score_model_interaction)
+
+
+```
+
+#  Parallel slope model
+## parallel slopes models still allow for different intercepts but force all lines to have the same slope. 
+
+```{r}
+ggplot(evals_ch6,aes(x=age,y=score,color=gender))+
+    geom_point()+
+    geom_parallel_slopes(se=F)+labs(x = "Age", y = "Teaching Score", color = "Gender")
+
+
+
+
+```
