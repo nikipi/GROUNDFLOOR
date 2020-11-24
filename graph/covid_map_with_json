@@ -1,0 +1,335 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import urllib.request\n",
+    "import json\n",
+    "import ssl \n",
+    "ssl._create_default_https_context = ssl._create_unverified_context\n",
+    "\n",
+    "def get_record(url):\n",
+    "    resp = urllib.request.urlopen(url)\n",
+    "    ele_json = json.loads(resp.read())\n",
+    "    return ele_json\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "my_json=get_record('https://covid.ourworldindata.org/data/owid-covid-data.json')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def get_target_value(key, dic, tmp_list):\n",
+    "    \"\"\"\n",
+    "    :param key: 目标key值\n",
+    "    :param dic: JSON数据\n",
+    "    :param tmp_list: 用于存储获取的数据\n",
+    "    :return: list\n",
+    "    \"\"\"\n",
+    "    if not isinstance(dic, dict) or not isinstance(tmp_list, list):  # 对传入数据进行格式校验\n",
+    "        return 'argv[1] not an dict or argv[-1] not an list '\n",
+    "\n",
+    "    if key in dic.keys():\n",
+    "        tmp_list.append(dic[key])  # 传入数据存在则存入tmp_list\n",
+    "\n",
+    "    for value in dic.values():  # 传入数据不符合则对其value值进行遍历\n",
+    "        if isinstance(value, dict):\n",
+    "            get_target_value(key, value, tmp_list)  # 传入数据的value值是字典，则直接调用自身\n",
+    "        elif isinstance(value, (list, tuple)):\n",
+    "            _get_value(key, value, tmp_list)  # 传入数据的value值是列表或者元组，则调用_get_value\n",
+    "\n",
+    "\n",
+    "    return tmp_list\n",
+    "\n",
+    "\n",
+    "def _get_value(key, val, tmp_list):\n",
+    "    for val_ in val:\n",
+    "        if isinstance(val_, dict):  \n",
+    "            get_target_value(key, val_, tmp_list)  # 传入数据的value值是字典，则调用get_target_value\n",
+    "        elif isinstance(val_, (list, tuple)):\n",
+    "            _get_value(key, val_, tmp_list)   # 传入数据的value值是列表或者元组，则调用自身\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 113,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Wallis and Futuna'"
+      ]
+     },
+     "execution_count": 113,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "location=get_target_value('location',my_json,[])\n",
+    "location=list(location)\n",
+    "location.pop(123)\n",
+    "location.pop(173)\n",
+    "location.pop(87)\n",
+    "location.pop(202)\n",
+    "location.pop(205)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 105,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "215"
+      ]
+     },
+     "execution_count": 105,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "data=get_target_value('data',my_json,[])\n",
+    "len(data)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 106,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "index=[]\n",
+    "test=[]\n",
+    "for i in range(len(data)):\n",
+    "    samll_sict=data[i]\n",
+    "    \n",
+    "    for eachday in   samll_sict: \n",
+    "        for key, value in eachday.items():\n",
+    "            if key=='date' and value=='2020-07-15':\n",
+    "                index.append(i)\n",
+    "                test.append(eachday['new_cases'])\n",
+    "    \n",
+    "       "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 107,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 206, 207, 208, 210, 211, 212, 213, 214]\n",
+      "86\n",
+      "121\n",
+      "171\n",
+      "201\n",
+      "204\n"
+     ]
+    },
+    {
+     "ename": "IndexError",
+     "evalue": "list index out of range",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mIndexError\u001b[0m                                Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-107-69fa27b197f7>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mindex\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      2\u001b[0m \u001b[0;32mfor\u001b[0m \u001b[0mi\u001b[0m \u001b[0;32min\u001b[0m \u001b[0mrange\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mlen\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mindex\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 3\u001b[0;31m     \u001b[0;32mif\u001b[0m \u001b[0mindex\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mi\u001b[0m\u001b[0;34m]\u001b[0m \u001b[0;34m+\u001b[0m\u001b[0;36m1\u001b[0m \u001b[0;34m!=\u001b[0m \u001b[0mindex\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mi\u001b[0m\u001b[0;34m+\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      4\u001b[0m         \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mi\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mIndexError\u001b[0m: list index out of range"
+     ]
+    }
+   ],
+   "source": [
+    "print(index)\n",
+    "for i in range(len(index)):\n",
+    "    if index[i] +1 != index[i+1]:\n",
+    "        print(i)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 115,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "map_version= dict(zip(location, test))\n",
+    "  "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 116,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "element=list(map_version.items())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 136,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0.0"
+      ]
+     },
+     "execution_count": 136,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "min(test)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 130,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'/Users/ypi/PycharmProjects/pythonProject/map.html'"
+      ]
+     },
+     "execution_count": 130,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "from pyecharts.charts import Map,Geo\n",
+    "\n",
+    "map = Map().add(series_name=\"COVID NEW CASES ON 2020-07-15\",  #名称\n",
+    "                data_pair=element,   #传入数据\n",
+    "                maptype='world', \n",
+    "                is_map_symbol_show=False #地图类型\n",
+    "                )\n",
+    "map.render('map.html')  #命名并保存"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 131,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<pyecharts.charts.basic_charts.map.Map at 0x111785f98>"
+      ]
+     },
+     "execution_count": 131,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "from pyecharts import options\n",
+    "\n",
+    "map.set_series_opts(label_opts=options.LabelOpts(is_show=False))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 137,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<pyecharts.charts.basic_charts.map.Map at 0x111785f98>"
+      ]
+     },
+     "execution_count": 137,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# SET COLOR FOR DIFFERENT NUMBER\n",
+    "map.set_global_opts(visualmap_opts=options.VisualMapOpts(max_=1100000,is_piecewise=True,pieces=[\n",
+    "                 {\"min\":250000},\n",
+    "                 {\"min\": 200000, \"max\": 249999},\n",
+    "                 {\"min\": 1000, \"max\": 199999},\n",
+    "                 {\"min\": 100, \"max\": 999},\n",
+    "                 {\"min\": 10, \"max\": 99},\n",
+    "                 {\"max\": 9},]))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 138,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'/Users/ypi/PycharmProjects/pythonProject/map.html'"
+      ]
+     },
+     "execution_count": 138,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "map.set_series_opts(label_opts=options.LabelOpts(is_show=False))#不显示国家名\n",
+    "\n",
+    "map.render('map.html') "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.4"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
