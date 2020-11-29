@@ -1,0 +1,452 @@
+---
+title: "POL40950: Introduction to Statistics"
+subtitle: 'Homework 2'
+author: "Yulu"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Instructions
+
+- Rename this file to your LASTNAME_FIRSTNAME_homework02.Rmd and insert your name at the header of this script (see `INSERT YOUR NAME`).
+
+- If an answer to a question requires code, add the code in the code block below. For questions that need interpretations or explanations, write your answer in _italics_ (using `_` and `_` at the beginning and end of your answer) below the question.
+
+- Make sure to add meaningful labels for the x-axis and y-axis to all plots.
+
+- Note: this script will only knit if you copied the data of the European Election Studies and the data of Irish towns and cities into the folder where you stored this `.Rmd` file.
+
+- Please knit this file as an .html document and upload the .html document to the assignment folder on Brightspace.
+
+- If the code for one of the questions is not working, leave the code in the chunk, but change the beginning of the chunk to `{r,eval=FALSE}`. Only do this as a last resort, though.
+
+
+## 1) Sampling and Confidence Intervals (40 points + 5 bonus points)
+
+In this exercise, we use the dataset containing the sizes of Irish towns. We exclude agglomerations and cities.
+
+```{r,message=FALSE}
+library(tidyverse)
+library(rio)
+
+dat_citiestowns <- read.csv("/Users/ypi/Desktop/data_towns_ireland.csv")
+
+# only filter towns (remove agglomerations)
+dat_towns <- filter(dat_citiestowns, status == "Census Town")
+
+# create two new variables
+dat_towns <- dat_towns %>% 
+    mutate(pop_diff = pop_census_2016 - pop_census_2006,
+        pop_diff_perc = 100 * (pop_census_2016 - pop_census_2006) / pop_census_2006)
+
+head(dat_towns$pop_diff)
+
+head(dat_towns$pop_diff_perc)
+
+nrow(dat_towns)
+```
+
+
+1. What does `pop_diff` measure and what does `pop_diff_perc` measure (the code above creates both variables)? When/why is it better to use  `pop_diff_perc`? Why do some observations have  missing values in `pop_diff` and `pop_diff_perc`? Only keep observations that do _not_ have missing values (`NA`) in `pop_diff`. [5 points]
+
+_pop_diff` measures the difference between 2016 and 2006s' population census, `pop_diff_perc` measures the percent that the difference takes in term of 2006s' populayion census result，when there is need to know how big is the difference comparing with its original place, we should use `pop_diff_perc`_
+
+
+```{r}
+library('dplyr')
+
+dat_towns <- dat_towns %>% 
+    mutate(pop_diff = pop_census_2016 - pop_census_2006,
+        pop_diff_perc = 100 * (pop_census_2016 - pop_census_2006) / pop_census_2006)
+
+#dat_towns <- dat_towns[!(is.na(dat_towns$pop_diff))|!(is.na(dat_towns$pop_diff_perc)),]
+
+dat_towns <- dat_towns[!(is.na(dat_towns$pop_diff)),]
+
+head(dat_towns$pop_diff)
+
+# dat_town_valid <- dat_towns %>%  filter(!is.ns(pop_diff))
+
+
+```
+
+2. Using the dataset that only contains valid observations for `pop_diff_perc`, sample 100 towns without replacement using the **infer** package (you may need to install this package if you haven't done it yet). Note: use `set.seed(123)` to ensure reproducibility of drawing the random samples. [5 points]
+
+```{r}
+library(infer)
+set.seed(123) # for reproducibility of the random draws
+
+```
+
+3. For this sample of 100 towns, estimate the mean,  standard deviation, and standard error of `pop_diff_perc`. Briefly interpret the three values. [5 points]
+
+```{r}
+set.seed(123) 
+
+sample_100 <- dat_towns %>% 
+  rep_sample_n(size=100) %>% summarize(mean=mean(pop_diff_perc),sd=sd(pop_diff_perc),
+                                       N    = sum(!is.na(pop_diff_perc)),se = sd / sqrt(N),
+                                      
+                                       ci_upper95=mean+1.96*se,
+ci_lower95=mean-1.96*se,ci_upper90=mean+1.65*se,
+ci_lower90=mean-1.65*se)
+
+
+head(sample_100)
+
+
+```
+
+
+4. Calculate the 90% and 95% confidence intervals of the mean and store these variables as `ci_lower90`, `ci_upper90`, `ci_lower95` and `ci_upper95` in data frame you created in Question 1.3. Why is the range of the 90% confidence intervals smaller than the range of the 95% confidence intervals. [5 points]
+
+_confidence intervals indicated how willing you are to be wrong.With a 90 percent confidence interval, you have a 10 percent chance of being wrong.With a 95 percent confidence interval, you have a 5 percent chance of being wrong. therefore  90 percent confidence interval would be narrower, because it leaves bigger chance for wrong assumption_
+
+```{r}
+
+ci_upper95=sample_100$mean+1.96*sample_100$se
+ci_lower95=sample_100$mean-1.96*sample_100$se
+ci_upper95
+ci_lower95
+
+ci_upper90=sample_100$mean+1.65*sample_100$se
+ci_lower90=sample_100$mean-1.65*sample_100$se
+ci_upper90
+ci_lower90
+
+
+
+
+```
+
+5. Create a dot-and-whiskers plot (`geom_pointrange()`) of the mean and lower and upper 95% confidence intervals. **Make sure that this plot and all following plots have unambiguous axis labels** (by adjusting `labs()`). [5 points]
+
+```{r}
+
+ggplot(sample_100,aes(x='',y=mean,ymin=ci_lower95,ymax=ci_upper95)
+)+geom_pointrange()+labs(x=NULL,y='Mean(and 95% CIs)')
+
+```
+
+6. Using the **infer** package, draw 100 samples of 300 towns, and estimate the mean, standard deviation, standard errors, and 95% confidence intervals for `pop_diff_perc` in each of these samples. Afterwards, create a histogram with the distribution of averages across the 100 samples. Interpret the shape of the distribution. [10 points]  
+
+_the histogram shows the most of the sample has the average between 24 and 24_
+
+```{r}
+set.seed(123) # for reproducibility of the random draws
+
+sample_towns <- dat_towns %>% rep_sample_n(size=300,
+                             rep=100,replace = F) %>% 
+  group_by(replicate) %>% 
+  summarise(mean=mean(pop_diff_perc), sd=sd(pop_diff_perc),
+                                       N    = sum(!is.na(pop_diff_perc)),se = sd / sqrt(N),
+                                       ci_upper95=mean+1.96*se,
+ci_lower95=mean-1.96*se)
+
+  
+sample_towns
+
+ggplot(sample_towns, aes(x = mean)) +
+  geom_histogram(binwidth = 1, color = "white") +
+  labs(x = "sample mean")
+
+
+
+
+
+
+
+```
+
+7. Create a dot-and-whiskers plot (`geom_pointrange()`) of the mean and lower and upper 95% confidence intervals of all 100 samples. Note: your plot will have 100 points and 100 errorbars. [5 points]
+
+```{r}
+
+ggplot(sample_towns,aes(x=replicate,y=mean,ymin=ci_lower95,ymax=ci_upper95)
+)+geom_pointrange()+labs(x='Replicate',y='Mean(and 95% CIs)')
+
+
+
+```
+
+
+9. BONUS: How many confidence intervals do not contain the population mean of `pop_diff_perc`? [5 points]
+
+_All the confidence intervals contain the the population mean of `pop_diff_perc`_
+
+```{r}
+
+mean<-mean(dat_towns$pop_diff_perc)
+mean
+
+sample_towns_sum<-sample_towns %>%  mutate(sample_outside = ci_lower95 > mean,
+                                            ci_upper95 < mean)
+
+table(sample_towns_sum$sample_outside)
+
+ggplot(data = sample_towns_sum,
+       aes(x = replicate, y = mean, 
+           ymin = ci_lower95, ymax = ci_upper95, 
+           color = sample_outside)) +
+    geom_pointrange() + 
+    ggtitle("Dot and whiskers plot showing the mean and 95% confidence intervals of the \npopulation percentage change for 100 different samples of 300 Irish \ntowns between 2006 and 2016") +
+    labs(x = "Sample Number", y = "Mean of Percentage Popultaion Change for Samples \n(with 95% Confidence Intervals")+ 
+    scale_colour_manual(values = c("grey50", "red"), 
+                        name = "CI outside of population mean") +
+    geom_hline(yintercept = mean, colour = "blue", 
+               size = 1.05, linetype = "dashed")
+
+```
+
+
+## 2) Regression Analysis (60 Points)
+
+For this part of the homework, we will make use of the 2019 [European Election Studies](http://europeanelectionstudies.net). The dataset is available at GESIS (after free registration). I uploaded the data and codebook on Brightspace, so you do not need to register for accessing the data. Copy and paste the dataset into the folder where you store this `.Rmd` script.
+
+Let's first prepare the data. 
+
+```{r}
+library(rio)
+library(skimr)
+
+dat_ees <- import("/Users/ypi/Desktop/ees_2019.dta")
+
+
+
+
+```
+
+
+For the remainder of the homework, remember to always **look at each variable (in the codebook and dataset) first before using it**, for example through the use of frequency tables or histograms. Moreover, make sure to recode missing values appropriately. 
+
+
+1. Create a histogram of the respondent's response to `Q_14_5`. What does this variable measure? What is the range of the variable? Briefly interpret the visual evidence. [5 points]
+
+-this variable measure how much a respondent agree with a restrictive policy on immigration, the range of the varibe is from 0-10 plus 98, the visual evidence show that most people are neutral to this policy, ad some people chose that they didn't know-
+
+```{r}
+
+library(ggplot2)
+
+dat_ees <- dat_ees %>% 
+    mutate(Q14_5 = as.character(Q14_5)) %>% 
+    mutate(Q14_5 = recode(Q14_5, 
+                          "99" = NA_character_,
+                          "98" = NA_character_)) %>%
+    filter(!is.na(Q14_5)) %>%
+    mutate(Q14_5 = (as.numeric(Q14_5))) %>% 
+    
+    mutate(country = recode(hCountry, 
+                            "1" = "Austria", 
+                            "2" = "Belgium", 
+                            "3" = "Bulgaria", 
+                            "4" = "Croatia", 
+                            "5" = "Cyprus",
+                            "6" = "Czech Republic", 
+                            "7" = "Denmark",
+                            "8" = "Estonia",
+                            "9" = "Finland",
+                            "10" = "France", 
+                            "11" = "Germany",
+                            "12" = "Greece", 
+                            "13" = "Hungary", 
+                            "14" = "Ireland",
+                            "15" = "Italy", 
+                            "16" = "Lithuania", 
+                            "17" = "Latvia", 
+                            "18" = "Luxembourg", 
+                            "19" = "Malta", 
+                            "20" = "Netherlands", 
+                            "21" = "Poland", 
+                            "22" = "Portugal", 
+                            "23" = "Romania", 
+                            "24" = "Slovenia", 
+                            "25" = "Slovakia", 
+                            "26" = "Spain", 
+                            "27" = "Sweden", 
+                            "28" = "UK"))
+
+```
+```{r}
+
+ggplot(dat_ees, aes(x = Q14_5)) +
+    geom_histogram(binwidth = 1, color = "white") +
+    ggtitle("Histogram of respondents views on restrictive immigration policies \n0 - Fully Support, 10 - Fully Oppose") +
+    labs(x = "Opinions on restrictive immigration policies.", y = "Number of Respondents ")
+
+
+```
+
+2. Create a new data frame that excludes missing values in `Q_14_5`. Group this new data frame _by country_ and calculate the average of `Q_14_5`, the standard deviation of this variable, and the standard error. Note that you can get the standard error for each country using `se = sd(Q_14_5, na.rm = TRUE) / sqrt(n())`. [5 points]
+
+
+
+```{r}
+
+head(dat_ees)
+
+dat_ees <- dat_ees[!(is.na(dat_ees$Q14_5)),]
+
+dat_ees2<-dat_ees %>% group_by(country) %>% 
+  summarise(mean=mean(Q14_5),sd=sd(Q14_5),se = sd(Q14_5, na.rm = TRUE) / sqrt(n()),ci_upper95=mean+1.96*se, ci_lower95=mean-1.96*se)
+
+
+```
+
+```{r}
+
+
+
+dat_ees2
+
+
+
+```
+```{r}
+dat_ees <- dat_ees %>% 
+    mutate(Q14_5 = as.character(Q14_5)) %>% 
+    mutate(Q14_5 = recode(Q14_5, 
+                          "99" = NA_character_,
+                          "98" = NA_character_)) %>%
+    filter(!is.na(Q14_5)) %>%
+    mutate(Q14_5 = (as.numeric(Q14_5))) %>% 
+    
+    mutate(country = recode(hCountry, 
+                            "1" = "Austria", 
+                            "2" = "Belgium", 
+                            "3" = "Bulgaria", 
+                            "4" = "Croatia", 
+                            "5" = "Cyprus",
+                            "6" = "Czech Republic", 
+                            "7" = "Denmark",
+                            "8" = "Estonia",
+                            "9" = "Finland",
+                            "10" = "France", 
+                            "11" = "Germany",
+                            "12" = "Greece", 
+                            "13" = "Hungary", 
+                            "14" = "Ireland",
+                            "15" = "Italy", 
+                            "16" = "Lithuania", 
+                            "17" = "Latvia", 
+                            "18" = "Luxembourg", 
+                            "19" = "Malta", 
+                            "20" = "Netherlands", 
+                            "21" = "Poland", 
+                            "22" = "Portugal", 
+                            "23" = "Romania", 
+                            "24" = "Slovenia", 
+                            "25" = "Slovakia", 
+                            "26" = "Spain", 
+                            "27" = "Sweden", 
+                            "28" = "UK"))
+
+dat_ees_summ <- dat_ees %>% 
+    group_by(country) %>% 
+    summarise(mean = mean(Q14_5, na.rm = TRUE), 
+              sd = sd(Q14_5, na.rm = TRUE), 
+              se = sd(Q14_5, na.rm = TRUE) / sqrt(n()))
+
+dat_ees_summ
+
+
+```
+
+3. Calculate 95% confidence intervals and plot the average country-specific `Q_14_5` averages along with 95% confidence intervals (using `geom_pointrange()`). Note: You can use `+ coord_flip()` to plot the country names on the y-axis. [10 points]
+
+```{r}
+
+
+
+
+ggplot(dat_ees2,aes(x=country,y=mean,ymin=ci_lower95,ymax=ci_upper95)
+)+geom_pointrange()+scale_y_continuous(breaks=seq(18, 40, 2))+labs(x=NULL,y='Mean(and 95% CIs)')+ coord_flip()
+
+
+```
+
+4. Repeat the previous plot but reorder the countries in ascending order on the y-axis based on the countries' average position (have a look at `reorder()` in the context of **ggplot2** -- Stack Overflow is your friend). [5 points]
+
+```{r}
+
+ggplot(dat_ees2,aes(x= reorder(country,mean),y=mean,ymin=ci_lower95,ymax=ci_upper95)
+)+geom_pointrange()+scale_y_continuous(breaks=seq(18, 40, 2))+labs(x=NULL,y='Mean(and 95% CIs)')+ coord_flip()
+
+
+```
+
+5. Create a new data frame that includes only respondents from your country of origin (if the country is included in the study) or a country of your choice. Run a linear regression with the responses to `Q14_5` as the dependent variable and `Q3` as the independent variable. What does `Q3` measure?  [5 points]
+
+-Q3 measures how much the respondent satisfied with the way democracy works in the country-
+
+```{r}
+
+library(tidyverse)
+library(moderndive)
+library(skimr)
+
+
+
+my_data<- dat_ees %>% filter(country == 'Ireland') %>% mutate(Q3=as.character(Q3)) %>% 
+  mutate(satisfaction_numeric=recode(Q3,
+                                     '99'=NA_character_,
+                                     '98'=NA_character_)) %>%  mutate(satisfaction_numeric = as.numeric(satisfaction_numeric))
+  
+
+my_model<-lm(Q14_5~satisfaction_numeric,data=my_data)
+
+get_regression_table(my_model)
+
+summary(my_model)
+
+
+```
+
+
+6. Create a publishable regression table using the **texreg** package (`install.packages("texreg")`). This involves adding a caption and renaming the name of the coefficient names (`custom.coef.names`).  [5 points]
+
+```{r, results='asis',messag=FALSE}
+library(texreg)
+htmlreg(my_model,custom.coef.names=c('Intercept','Democracy Satisfaction'))
+
+```
+
+7. Interpret the coefficients of the independent variable. Also interpret the value of $R^2$. [5 points]
+
+
+_Intercept is 8.293,and the coefficient is for Q3 is 0.288, the intercept is the average Q14_5 score when the respondent had a 0 Q3 score.the coefficient is 0.288, suggesting a positive relationship between Q14_5 and Q3. For every increase of 1 unit in Q3, there is a associated increase of, on average, 0.288 units of Q14_5,R^2 is 0.05 indicates that the model explains 5 % the variability of the response data around its mean _ 
+
+8. Carefully check the codebook and include three additional independent variables that might explain the response to `Q_14_5`. Make sure to recode missing values in each variable. Run the analysis only for one country (the country you filtered in Q2.5). Afterwards, run a regression with the four variables (the independent variable from Question 2.5) and your additional variables. Create a publishable regression table (same procedure as in Question 2.6). [5 points]
+
+```{r, results='asis',messag=FALSE}
+
+
+
+
+my_model1<-lm(Q14_5~Q3+Q16+Q14_1+Q14_2,data=my_data)
+
+get_regression_table(my_model1)
+
+summary(my_model1)
+
+htmlreg(my_model1)
+
+
+
+
+
+```
+
+
+9. Outline the theoretical assumptions behind the selection of the three variables, and interpret the regression model (all coefficients, model fit, substantive size of the coefficients) (in total 400-500 words). Make sure to pay close attention to the correct interpretation of coefficients in regression models. [10 points]
+
+_the three additional variables I chose are Q16, Q14_3, and Q14_2. Q16 measures the importance of democracy that the respondents thought. Q14_1 measures how much a respondent agrees with state regulation and control of the economy. Q14_2 Q14_1 measures how much a respondent agrees with the policy that wealth redistribution from rich to poor. The theoretical assumptions behind my selection are the difference between left-wing and right-wing. For example, left-wing people who oppose state intervention tend to explore a possible pathway to citizenship for undocumented immigrants, therefore there will be a positive correlation between how much these people oppose state intervention and how much he/she disagrees with a restrictive immigration policy_
+
+
+_As can be seen from the table, the score for Q14_5 is positively and significantly correlated with the score for Q3, Q16, Q14_1, Q14_2, indicating the more imporant people think democracy is, the more people are against the state intervention and wealth redistribution, the more people will disagree with restrictive immigration policy. For every increase of 1 unit in Q3 score, there is a associated increase of, on average, 0.09 units of Q14_5.For every increase of 1 unit in Q16 score, there is a associated increase of, on average, 0.2 units of Q14_5.For every increase of 1 unit in Q14_1 score, there is a associated increase of, on average, 0.26 units of Q14_5.For every increase of 1 unit in Q14_2 score, there is a associated increase of, on average, 0.24 units of Q14_5_
+
+
+
