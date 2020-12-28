@@ -1,0 +1,30 @@
+class Rectangle():
+    def __init__(self, length, width, **kwargs):
+        self.length = length
+        self.width = width
+        super().__init__(**kwargs)
+
+    def area(self):
+        return self.length * self.width
+
+    def circumstance(self):
+        return (self.length + self.width) * 2
+
+class Square(Rectangle):
+    def __init__(self,length,**kwargs):
+        super().__init__(length = length,width =length, **kwargs)
+
+class Cube(Square):
+    def surface(self):
+        face_area=super().area()
+        return face_area*6
+
+    def volumn(self):
+        face_area = super().area()
+        return  face_area * self.length
+
+
+
+cube = Cube(3)
+print(cube.circumstance())
+print(cube.volumn())
