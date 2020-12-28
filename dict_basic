@@ -26,4 +26,25 @@ for sandwich in finished_sandwiches:
     print("\t" + sandwich)
 print('\n')
 
+wars = [
+{"war": "Italian Wars", "death-toll": 350000,
+"start-year": 1494, "end-year": 1559},
+{"war": "Spanish conquest of the Aztec Empire", "death-toll": 2300000,
+"start-year": 1519, "end-year": 1632},
+{"war": "German Peasants War", "death-toll": 100000,
+"start-year": 1524, "end-year": 1525},
+{"war": "Transition from Ming to Qing", "death-toll": 25000000,
+"start-year": 1616, "end-year": 1683},
+{"war": "Franco-Dutch War", "death-toll": 220000,
+"start-year": 1672, "end-year": 1678}
+]
+
+
+
+### find a biggest value in a dict
+with_biggest_toll= wars[0]
+for war in wars:
+    if war['death-toll'] > with_biggest_toll['death-toll']:
+        with_biggest_toll= war
+print(with_biggest_toll['war'])
 
