@@ -1,0 +1,12 @@
+from datetime import datetime
+
+class Log:
+
+    def __init(self,filename):
+        self.filename = filename
+
+    def write(self, message):
+        with open(self.filename, 'a') as file:
+            timestamp = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+
+            filewrite(timestamp+ ''+ message+ '\n')
