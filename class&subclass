@@ -27,3 +27,37 @@ class colorwithdimension(cube,dimension):
 
 colorcube1= colorwithdimension('BOB')
 print(colorcube1.Query())
+
+
+
+
+
+class ChristmasTree:
+    def __init__(self):
+        self.decorations = []
+
+    def add_decoration(self,decoration):
+        self.decorations.append(decoration)
+    def count_by_color(self,color):
+        count=0
+
+        for dec in self.decorations:
+            if dec.color == color :
+              count= count+1
+        return count
+
+class Decoration:
+    def __init__(self,color,shape):
+        self.color = color
+        self.shape = shape
+
+ob1=Decoration(color='R', shape ='C')
+ob2=Decoration(color='R', shape='C')
+ob3=Decoration(color='B', shape='C')
+
+tree= ChristmasTree()
+tree.add_decoration(ob1)
+tree.add_decoration(ob2)
+tree.add_decoration(ob3)
+
+print(tree.count_by_color('R'))
