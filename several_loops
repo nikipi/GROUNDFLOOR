@@ -1,0 +1,18 @@
+for i in range(1,4):
+    for j in range(i,3):
+        print([i,j])
+print('\n')
+
+
+for i in range(1,5):
+    for j in range(1,5):
+        print([i,j])
+print('\n')
+
+for i in range(1,5):
+    for j in range(1,5):
+        for m in range(1,5):
+            print([i,j,m])
+            
+            
+             # if there are several loops then finish the last one then the previous one ... then the first one 
