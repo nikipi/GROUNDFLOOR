@@ -1,0 +1,63 @@
+class Node:
+    def __init__(self,val):
+        self.val = val
+        self.next = None
+
+
+class SlinkedList:
+    def __init__(self):
+        self.head = None
+
+    def travel(self):
+        cur = self.head
+        while cur:
+            print(cur.val)
+            cur = cur.next
+
+    def addhead(self,newval):
+        newnode = Node(newval)
+        newnode.next = self.head
+        self.head = newnode
+
+    def addtail(self,newval):
+        newnode = Node(newval)
+        cur = self.head
+        while cur.next:
+            cur = cur.next
+
+        cur.next = newnode
+
+    def delete(self,key):
+        cur = self.head
+        while cur.next:
+            if cur.val == key:
+                cur.val = cur.next.val
+                cur.next = cur.next.next
+            cur = cur.next
+
+# cannot delete the last node 
+
+
+list1= SlinkedList()
+
+list1.head = Node('Mon')
+
+n2=Node('Tue')
+n3= Node('Wed')
+
+list1.head.next =n2
+n2.next = n3
+
+list1.travel()
+
+list1.addhead('Sun')
+
+list1.travel()
+
+list1.addtail('Thu')
+
+list1.travel()
+
+list1.delete('Thu')
+
+list1.travel()
