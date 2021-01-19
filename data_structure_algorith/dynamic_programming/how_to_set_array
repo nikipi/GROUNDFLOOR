@@ -1,0 +1,10 @@
+#pointer= [[0]*7]*3
+# print(pointer)
+# pointer[0][0]='a'
+# print(pointer)
+
+#
+# cell_only = [[0]*3 for _ in range(2)]
+# cell_only[0][0]='a'
+# print(cell_only)
+#
