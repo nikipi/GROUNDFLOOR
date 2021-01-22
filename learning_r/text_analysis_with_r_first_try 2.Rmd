@@ -1,0 +1,204 @@
+---
+title: "text_first_try"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+library(readtext)
+library(stringr)
+
+filepath="https://raw.githubusercontent.com/kbenoit/readtext/master/inst/extdata/csv/inaugCorpus.csv"
+
+rt<- readtext(filepath,text_field="texts")
+
+rt
+
+
+
+```
+
+
+```{r}
+# connect
+
+str_c("love","you")
+
+str_c("love","you",sep="-")
+
+str_c(c("a","b1"),c("b","b1"),sep="-")
+
+str_c(c("a","b"),"-d")
+
+```
+
+
+
+```{r}
+# remove the space
+
+str_trim("       left space\t\n",side="right")
+
+str_trim("       left space\t\n",side="left")
+
+str_trim("       left space\t\n",side="both")
+
+str_trim("    left   ")
+
+
+
+```
+
+
+
+```{r}
+# duplicate the  string
+
+val <- c("abca4", 123, "cba2")
+
+str_dup(val,2)
+
+
+# count the letter
+
+str_count("aaaaaavbvvvv234","a")
+
+fruit <- c("apple", "banana", "pear", "pineapple")
+
+str_count(fruit,"a")
+
+str_count(fruit,"p")
+
+# length of the string
+
+str_length(c("wer","romain","哦在"))
+
+
+```
+
+
+
+```{r}
+
+x <- c("The first string       ", 'The <font size="6">second string</font>')
+
+x <-str_trim(x)
+x
+
+x <-str_to_lower(x)
+x
+
+# captialized every letter
+str_to_upper(x)
+
+
+# captoalized the first letter
+str_to_title(x)
+
+str_replace_all(x,"<.*?>","")
+
+
+
+```
+
+
+```{r}
+# extract the pattern 
+
+val<-c("abca4ad",123,"1b234a","abc23")
+
+
+# the first matahed
+str_extract(val,"\\d")
+# all of thr matched
+str_extract_all(val,"\\d")
+
+
+str_extract(val,"[a-z]+")
+str_extract_all(val,"[a-z]+")
+
+
+
+
+
+```
+
+
+
+```{r}
+val <- c("abc", 123, "cba")
+
+str_replace(val,"[ab]","-")
+
+str_replace_all(val,"[ab]","-")
+
+
+
+
+
+```
+
+
+```{r}
+
+# Tokenization
+
+library(quanteda)
+
+text <- "An example of preprocessing techniques"
+toks <- tokens(text)
+toks
+
+toks<-tokens_tolower(toks)
+toks<-tokens_wordstem(toks)
+
+toks
+
+sw<-stopwords('english')
+
+tokens_remove(toks,sw)
+
+
+
+
+
+```
+
+
+
+```{r}
+text <- c(d1 = "An example of preprocessing techniques",
+d2 = "An additional example",
+d3 = "A third example")
+
+dtm<-dfm(text,
+         tolower=TRUE,stem=TRUE,remove=stopwords("english"))
+
+dtm
+
+```
+
+
+```{r}
+fulltext<-corpus(rt)
+
+dtm<-dfm(fulltext,tolower=TRUE,
+         stem=TRUE,remove_punct=TRUE,
+         remove=stopwords("english"))
+
+dtm
+
+doc_freq<-docfreq(dtm)
+dtm<-dtm[,doc_freq>=4]
+
+dtm<-dfm_weight(dtm,"tfidf")
+
+dtm
+
+
+```
