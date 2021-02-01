@@ -1,0 +1,12 @@
+from scihub import SciHub
+
+sh=SciHub()
+
+keywords= 'Algorithm government'
+
+result = sh.search(keywords,limit=10)
+
+print(result)
+
+for index,paper in enumerate(result.get('papers',[])):
+    sh.download(paper['url'],path= f'')
