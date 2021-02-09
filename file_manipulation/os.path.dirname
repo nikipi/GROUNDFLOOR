@@ -1,0 +1,19 @@
+import os
+
+# ABS PATH
+path1=os.path.dirname(__file__)
+print(path1)
+
+path5=os.path.abspath(__file__)
+print(path5)  # 显示文件名 和 拓展名
+
+path2 = os.path.dirname(os.path.dirname(__file__))
+print(path2)
+
+path4=os.path.dirname(os.path.abspath(__file__))
+print(path4)
+
+
+# the filepath of os file
+path3=os.__file__
+print(path3)
