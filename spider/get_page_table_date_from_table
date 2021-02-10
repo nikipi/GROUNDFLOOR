@@ -1,3 +1,5 @@
+import requests
+from bs4 import BeautifulSoup
 import re
 import requests
 from bs4 import BeautifulSoup
@@ -51,6 +53,13 @@ def _soup_extract_info(tr):
     if _date != '':
         datetime_object = datetime.strptime(_date, '%d %b %Y')
         item_dict['date']=datetime_object.strftime("%Y-%m-%d")
+
+    _a = tr.find('div', {'class': 'title'}).find('a')
+
+    item_dict['title'] = get_str_strip(_a.text, without_n_t_blank=True)
+    item_dict['pdf_url'] = "https://www.bis.org" + _a['href'][:-4] + 'pdf'
+    item_dict['key'] = item_dict['pdf_url'].split('/')[-1][:4]
+
     return item_dict
 
 for tr in trs:
