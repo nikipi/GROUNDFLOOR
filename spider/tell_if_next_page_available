@@ -1,0 +1,30 @@
+import requests
+from bs4 import BeautifulSoup
+import re
+import requests
+from bs4 import BeautifulSoup
+import datetime
+
+def get_soup_html(url):
+    try:
+        resp = requests.get(url)
+        soup_html = BeautifulSoup(resp.content, 'html.parser')
+    except Exception as e:
+        print(str(e))
+        content = "get_soup_html" + "\n" + url + "\n"
+
+    return soup_html
+
+soup = get_soup_html('https://www.bis.org/list/cbspeeches/from_01012021/index.htm')
+
+def _next_page_available(soup_html):
+    li_next = soup_html.find('li',{'class':'next'})
+    if li_next is None:
+        return False
+    if li_next.get('title') is None:
+        return True
+    else:
+        return False
+
+print(_next_page_available(soup))
+
