@@ -23,3 +23,17 @@ print (
     (s+' ')*2
 )
 
+
+
+def get_str_concat(*args):
+    _str = ''
+    firstLine = True
+    for idx,arg in enumerate(args):
+        if idx == 0:
+            _str += arg
+            forstLine  = False
+            continue
+        _str = _str + '_' + arg
+    return _str
+
+print(get_str_concat('qww','ss','qwe'))
