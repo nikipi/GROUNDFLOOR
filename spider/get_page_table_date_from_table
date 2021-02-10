@@ -59,6 +59,13 @@ def _soup_extract_info(tr):
     item_dict['title'] = get_str_strip(_a.text, without_n_t_blank=True)
     item_dict['pdf_url'] = "https://www.bis.org" + _a['href'][:-4] + 'pdf'
     item_dict['key'] = item_dict['pdf_url'].split('/')[-1][:4]
+    
+    
+    try:
+        _item_short_info = tr.find('div',{'class': 'info'}).text
+        item_dict['short_info'] = get_str_strip(_item_short_info,without_n_t_blank = True)
+    except Exception as e:
+        item_dict['short_info'] = ''
 
     return item_dict
 
