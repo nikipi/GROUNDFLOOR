@@ -1,0 +1,44 @@
+
+from pdfminer.pdfparser import PDFParser
+from pdfminer.pdfdocument import PDFDocument
+from pdfminer.pdfpage import PDFPage
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer.pdfpage import PDFTextExtractionNotAllowed
+from pdfminer.layout import LAParams, LTTextBox, LTTextLine
+from pdfminer.converter import PDFPageAggregator
+
+def pdf2txt(one_file,target_regex=None):
+    password = ""
+
+    fp = open(one_file, "rb")
+    parser = PDFParser(fp)
+    document = PDFDocument(parser, password)
+    if not document.is_extractable:
+        raise PDFTextExtractionNotAllowed
+
+    rsrcmgr = PDFResourceManager()
+    laparams = LAParams()
+    device = PDFPageAggregator(rsrcmgr, laparams=laparams)
+    interpreter = PDFPageInterpreter(rsrcmgr, device)
+
+    whole_extracted_text = ""
+    for page in PDFPage.create_pages(document):
+        interpreter.process_page(page)
+        layout = device.get_result()
+        for lt_obj in layout:
+            if isinstance(lt_obj, LTTextBox) or isinstance(lt_obj, LTTextLine):
+                extracted_text = lt_obj.get_text()
+                if target_regex is not None:
+                    target_content = target_regex.sub(' ', extracted_text)
+                else:
+                    target_content = extracted_text
+                whole_extracted_text += target_content
+    fp.close()
+    return whole_extracted_text
+
+def read_txt(txt_filepath):
+    with open(txt_filepath, "r", encoding='utf-8') as f:
+        content = f.read()
+    return content
+
+print(pdf2txt('/Users/ypi/Desktop/Tiktok.pdf'))
