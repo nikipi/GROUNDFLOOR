@@ -1,0 +1,58 @@
+import re
+import requests
+from bs4 import BeautifulSoup
+import datetime
+
+def get_soup_html(url):
+    try:
+        resp = requests.get(url)
+        soup_html = BeautifulSoup(resp.content, 'html.parser')
+    except Exception as e:
+        print(str(e))
+        content = "get_soup_html" + "\n" + url + "\n"
+
+    return soup_html
+
+soup = get_soup_html('https://www.bis.org/list/cbspeeches/from_01011997/index.htm')
+
+def _get_trs(html):
+    table = html.find('table',{'class':'documentList'})
+    trs =table.find('tbody').find_all('tr')
+    print('# of documents ', len(trs))
+    return trs
+
+trs=_get_trs(soup)
+
+
+normalize_pattern = re.compile('[\n\t]')
+# EMPYT SPACE \S
+doublespace_pattern = re.compile('\s+')
+
+def get_str_strip(content, without_n_t_blank = False):
+    if content is None:
+        val=''
+    else:
+        val=str(content).strip()
+        if without_n_t_blank:
+            val=normalize_pattern.sub('',val)
+            val= doublespace_pattern.sub('',val)
+        return val
+
+#
+#
+
+from datetime import datetime
+def _soup_extract_info(tr):
+    item_dict = dict()
+
+    _item_date = tr.find('td',{'class': 'item_date'})
+
+    _date = get_str_strip(_item_date.text)
+    if _date != '':
+        datetime_object = datetime.strptime(_date, '%d %b %Y')
+        item_dict['date']=datetime_object.strftime("%Y-%m-%d")
+    return item_dict
+
+for tr in trs:
+    item_dicts=_soup_extract_info(tr)
+    print(item_dicts)
