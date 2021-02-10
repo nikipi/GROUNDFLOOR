@@ -1,0 +1,21 @@
+import os
+
+def get_filepaths(directory, file_ext):
+    filepaths = []
+    for r, d, f in os.walk(directory):
+        for file in f:
+            if file_ext in file:
+                filepaths.append(os.path.join(r, file))
+    return filepaths
+
+pdf_filepaths=get_filepaths('/Users/ypi/Desktop/dublin','.pdf')
+
+
+count = 0
+for one_file in pdf_filepaths:
+        count += 1
+        print("[", count, "/", len(pdf_filepaths), "]")
+        filename_w_ext = os.path.basename(one_file)
+
+        filename_only = filename_w_ext[:-4]
+        print(filename_only)
