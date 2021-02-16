@@ -1,0 +1,36 @@
+import pandas as pd
+df=pd.read_csv('/Users/ypi/Desktop/geneva_company.csv')
+print(df.head())
+
+import urllib,re
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+
+
+sites=df['website_link-href'].values.tolist()
+
+emails = []
+
+for site in sites:
+    try:
+
+        f = urllib.request.urlopen(site)
+        s = f.read()
+        email = re.findall(rb"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}", s)
+        emails.append(email)
+
+    except:
+        emails.append('nan')
+        pass
+
+clean=[]
+for item in emails:
+    item=list(set(item))
+    clean.append(item)
+
+
+
+
+df['emaill_address']=clean
+
+df.to_excel("/Users/ypi/Desktop/geneva_company1.xlsx")
