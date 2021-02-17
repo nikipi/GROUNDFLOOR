@@ -34,3 +34,22 @@ for item in emails:
 df['emaill_address']=clean
 
 df.to_excel("/Users/ypi/Desktop/geneva_company1.xlsx")
+
+
+
+import xlrd
+import pandas as pd
+import re
+from parse import compile
+df=pd.read_excel("/Users/ypi/Desktop/geneva_company1.xlsx")
+
+df.emaill_address=[row[1:-1] for row in df.emaill_address]
+df.emaill_address=[row.replace("b'","") for row in df.emaill_address]
+df.emaill_address=[row.replace("'","") for row in df.emaill_address]
+
+#
+# pattern= re.compile("'(.*)'")
+# df.emaill_address=[pattern.findall(row) for row in df.emaill_address]
+print(df.head())
+
+df.to_excel("/Users/ypi/Desktop/geneva_company2.xlsx")
