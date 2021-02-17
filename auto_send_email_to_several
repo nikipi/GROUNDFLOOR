@@ -1,0 +1,27 @@
+
+import smtplib
+from email.message import EmailMessage
+
+receivers_email=['1','2']
+
+person =['NIKI','Romain']
+
+for i in range(len(person)):
+
+    body = "This is an email to {}".format(person[i])
+    receiver_email = receivers_email[i]
+
+    msg = EmailMessage()
+    msg['Subject'] = 'This is a test'
+    msg['From'] = 'email'
+    msg['To'] = receiver_email
+    msg.set_content(body)
+
+
+    with smtplib.SMTP_SSL('smtpout.secureserver.net', 465) as smtp:
+        smtp.login('email', 'pass')
+        smtp.ehlo()
+        smtp.send_message(msg)
+    print('Emails Sent')
+
+# https://www.google.com/settings/security/lesssecureapps
