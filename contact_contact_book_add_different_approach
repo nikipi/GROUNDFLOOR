@@ -55,6 +55,42 @@ class Contact_book():
     def __init__(self):
         self.book=[]
 
+    def add_contact(self,Contact):
+        self.book.append(Contact)
+
+    def search(self,find):
+        return [c.name for c in self.book if find in c.name]
+
+book1=Contact_book()
+book1.add_contact(c1)
+book1.add_contact(c2)
+book1.add_contact(c3)
+
+print(book1.search('John'))
+
+
+class Contact():
+
+
+    def __init__(self, name, email):
+        self.name = name
+        self.email = email
+
+
+    def match(self,find):
+       return find in self.name
+
+c1 = Contact("John A", "johna@example.net")
+c2 = Contact("John B", "johnb@example.net")
+c3 = Contact("Jenna C", "jennac@example.net")
+
+print(c1.match('John'))
+print(c3.match('John'))
+
+class Contact_book():
+    def __init__(self):
+        self.book=[]
+
     def add_contact(self,name,email):
         self.book.append(Contact(name,email))
 
@@ -62,3 +98,9 @@ book1=Contact_book()
 book1.add_contact('Jone A',"johna@example.net")
 
 print(book1.book)
+
+
+
+
+
+-----------------better to have two different object one for contact one for contact book
