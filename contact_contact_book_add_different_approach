@@ -1,0 +1,64 @@
+class Contact():
+
+
+    def __init__(self, name, email):
+        self.name = name
+        self.email = email
+
+
+    def match(self,find):
+       return find in self.name
+
+c1 = Contact("John A", "johna@example.net")
+c2 = Contact("John B", "johnb@example.net")
+c3 = Contact("Jenna C", "jennac@example.net")
+
+print(c1.match('John'))
+print(c3.match('John'))
+
+class Contact_book():
+    def __init__(self):
+        self.book=[]
+
+    def add_contact(self,Contact):
+        self.book.append(Contact)
+
+book1=Contact_book()
+# book1.add_contact('Jone A',"johna@example.net")
+book1.add_contact(c1)
+print(book1.book)
+
+
+
+======================================================
+
+
+class Contact():
+
+
+    def __init__(self, name, email):
+        self.name = name
+        self.email = email
+
+
+    def match(self,find):
+       return find in self.name
+
+c1 = Contact("John A", "johna@example.net")
+c2 = Contact("John B", "johnb@example.net")
+c3 = Contact("Jenna C", "jennac@example.net")
+
+print(c1.match('John'))
+print(c3.match('John'))
+
+class Contact_book():
+    def __init__(self):
+        self.book=[]
+
+    def add_contact(self,name,email):
+        self.book.append(Contact(name,email))
+
+book1=Contact_book()
+book1.add_contact('Jone A',"johna@example.net")
+
+print(book1.book)
