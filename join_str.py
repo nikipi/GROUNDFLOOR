@@ -37,3 +37,10 @@ def get_str_concat(*args):
     return _str
 
 print(get_str_concat('qww','ss','qwe'))
+
+
+
+
+
+--------------want to remove ''from the list
+print('({})'.format(', '.join(("coin", "ensuite", "none"))))
