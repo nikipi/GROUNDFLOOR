@@ -1,0 +1,94 @@
+class EvenOnly(list):
+    def append(self,integer):
+        if not isinstance(integer,int):
+            raise TypeError('Only integers can be added')
+        if integer % 2:
+            raise ValueError('Only even numbers can be added')
+        super().append(integer)
+
+
+#e=EvenOnly()
+# e.append('a string')
+# e.append(3)
+
+
+### TypeError Exception
+
+def funny_division(divider):
+    try:
+        return 100/divider
+    except ZeroDivisionError:
+        return 'Zero is not a good idea'
+
+# print("0",funny_division(0))
+# print('50',funny_division(50))
+# print('hello',funny_division('hello'))
+
+def funny_division2(anumber):
+    try:
+        if anumber == 13:
+            raise ValueError('13 is an unlucky number')
+        return 100 / anumber
+    except (ZeroDivisionError,TypeError):
+        return 'Enter a number other than zero'
+
+
+
+
+def funny_division3(anumber):
+    try:
+        if anumber == 13:
+            raise ValueError('13 is an unlucky number')
+        return 100/anumber
+    except ZeroDivisionError:
+        return 'Enter a number other than zero'
+    except TypeError:
+        return 'Enter a numberical value'
+    except ValueError:
+        print('No,No,not 13')
+        raise
+
+
+# for val in (0,'hello',50.0,13):
+#     print('Tesing {}:'.format(val),end=' ')
+#     print(funny_division3(val))
+
+import random
+some_exceptions = [ValueError,TypeError,IndexError,None]
+
+try:
+    choice = random.choice(some_exceptions)
+    print('raising {}'.format(choice))
+    if choice:
+        raise choice('An error')
+
+except ValueError:
+    print('Caught a ValueError')
+except TypeError:
+    print('Caught a TypeError')
+except Exception as e:
+    print('Caught some other error %s' % (e.__class__.__name__))
+
+else:
+    print('This code called if there is not exception')
+finally:
+    print('This cleanup code is always called')
+
+class InvalidWithdrawal(Exception):
+    def __init__(self,balance,amount):
+        super().__init__('account does not have ${}'.format(amount))
+        self.amount = amount
+        self.balance = balance
+
+    def overage(self):
+        return self.amount - self.balance
+
+
+try:
+
+ raise InvalidWithdrawal(25,50)
+
+except InvalidWithdrawal as e:
+    print('I am sorry, but your withdrawal is more than'
+          'your balance by ${}'.format(e.overage()))
+    raise
