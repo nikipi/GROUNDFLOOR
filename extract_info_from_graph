@@ -1,0 +1,8 @@
+from PIL import Image
+
+
+img = Image.open('./images/pic_hd.jpg')
+key = ''
+
+exif_data = img.getexif()[key]
+print(exif_data)
