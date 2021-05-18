@@ -1,3 +1,40 @@
+
+
+
+
+some_args = range(3)
+print(some_args)
+print(*some_args)
+
+
+more_args = {
+"arg1": "ONE", "arg2": "TWO"}
+
+more_args2 = {
+"arg1": "ONE", "arg2": "TWO",'arg3':'Three'}
+
+print(more_args)
+print(*more_args)
+
+def show_args(arg1, arg2, arg3="THREE"):
+    print(arg1, arg2, arg3)
+
+
+print("Unpacking a sequence:", end=" ")
+show_args(*some_args)
+
+print("Unpacking a dict:", end=" ")
+show_args(*more_args)
+# Unpacking a dict: arg1 arg2 THREE
+
+show_args(**more_args)
+
+print("Unpacking a dict2:", end=" ")
+show_args(*more_args)
+# Unpacking a dict: arg1 arg2 THREE
+
+show_args(**more_args2)
+
 def myFun(**kwargs):
     for key, value in kwargs.items():
         print("%s == %s" % (key, value))
