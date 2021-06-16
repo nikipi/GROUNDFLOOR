@@ -95,3 +95,50 @@ def printer(msg):
     print(msg)
 
 printer('Hello')
+
+
+
+def respect(maybe):
+    def congrats():
+        return 'Congrats Bro'
+    def insult():
+        return 'Go away'
+
+    if maybe<5:
+        return congrats
+    else:
+        return insult()
+
+print(respect(8))
+
+def wrapper(func):
+    def status(*args):
+        print('Start')
+        func(*args)
+        print('Finish')
+    return status
+
+@wrapper
+
+def add(x,y):
+    print(x+y)
+
+add(3,5)
+
+# measure run time
+
+import time
+
+def measuretime(func):
+    def wrapper():
+        starttime = time.perf_counter()
+        func()
+        endtime = time.perf_counter()
+        print(f'Time needed:{endtime - starttime} seconds')
+    return wrapper
+
+@measuretime
+def wastetime():
+    sum([i**2 for i in range(100000)])
+
+wastetime()
