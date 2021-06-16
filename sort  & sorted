@@ -23,3 +23,20 @@ print(b)
 print(sorted(name_mark_age,key = lambda x: x[2]))
 
 print(sorted(name_mark_age,key = lambda x: x[0],reverse=True))
+
+
+class Student:
+    def __init__(self, name, grade, age):
+        self.name = name
+        self.grade = grade
+        self.age = age
+
+student_objects = [
+        Student('john', 'A', 15),       #注意这里,用class Student来生成列表内的值
+        Student('jane', 'B', 12),       #因此,可以通过student_objects[i].age来访问某个名称的年龄,i=0,则是john的年龄
+        Student('dave', 'B', 10),
+        ]
+
+
+b=sorted(student_objects,key=lambda student:student.age)
+print([x.name for x in b])
