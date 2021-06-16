@@ -1,0 +1,25 @@
+## sort  & sorted
+
+a = [2,4,5,67,9,10,12]
+name_mark_age = [('zhangsan','A',15),('LISI','B',14),('WANGWU','A',16)]
+qw="I am Qiwsir you can read my articles im my blog".split()
+
+print(sorted(a))
+print(a)
+a.sort()
+### sorted(a) can print but not change a.sort change but no print
+print(a)
+
+a=sorted(a)
+print(a)
+
+# sorted() can do more than just for list
+
+print(sorted(qw,key=str.lower))
+
+b=sorted(qw,key=str.lower)
+print(b)
+
+print(sorted(name_mark_age,key = lambda x: x[2]))
+
+print(sorted(name_mark_age,key = lambda x: x[0],reverse=True))
