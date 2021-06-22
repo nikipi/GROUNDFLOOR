@@ -1,0 +1,9 @@
+class sting:
+    def __init__(self):
+        self.str=''
+        
+    def getsting(self):
+        self.str = input('enter a string')
+        
+    def printstring(self):
+        print(self.str.upper())
