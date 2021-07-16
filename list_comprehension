@@ -14,3 +14,21 @@ print([item.lower() for item in L])
 
 array = [[ [0 for col in range(8)] for col in range(5)] for row in range(3)]
 print(array)
+
+
+#1
+a=[]
+for color in colors:
+    for size in sizes:
+        a.append((color,size))
+
+print(a)
+
+#2
+
+print([(color,size) for color in colors for size in sizes])
+
+#3
+
+print([(color,size) for size in sizes for color in colors
+                    ])
