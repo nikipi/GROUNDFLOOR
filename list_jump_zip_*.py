@@ -92,4 +92,25 @@ print(dict(zip(b, f)))
 
 # transfer two list to dict  ---think it like transpose
 
+person= collections.namedtuple('Person','name age height')
+jane = person('Jane',25,1.75)
+print(jane)
 
+a=jane._asdict()
+print(a)
+
+
+for key, value in a.items():
+    print(key + ':' ,value)
+
+for field, value in zip(jane._fields, jane):
+    print(field,'->', value)
+
+a = ("John", "Charles", "Mike")
+b = ("Jenny", "Christy", "Monica", "Vicky")
+
+x = zip(a, b)
+print(list(x))
+
+for field, value in zip(a, b):
+    print(field, 'marrys', value)
