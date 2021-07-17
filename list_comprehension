@@ -32,3 +32,40 @@ print([(color,size) for color in colors for size in sizes])
 
 print([(color,size) for size in sizes for color in colors
                     ])
+
+
+
+
+###### list comprehension for dict
+
+
+DIAL_CODES = [
+ (86, 'China'),
+ (91, 'India'),
+ (1, 'United States'),
+ (62, 'Indonesia'),
+(55, 'Brazil'),
+ (92, 'Pakistan'),
+(880, 'Bangladesh'),
+(234, 'Nigeria'),
+(7, 'Russia'),
+ (81, 'Japan')]
+
+
+
+## to list of tuple to a dict
+
+a=dict()
+for item in DIAL_CODES:
+    a[item[0]]=item[1]
+
+print(a)
+
+
+country_code = {country : code for code, country in DIAL_CODES}
+print(country_code)
+
+
+b={  code: country.upper() for country, code in country_code.items() if code< 66}
+
+print(b)
