@@ -40,3 +40,7 @@ student_objects = [
 
 b=sorted(student_objects,key=lambda student:student.age)
 print([x.name for x in b])
+
+## 根据长度排序
+fruits = ['strawberry', 'fig', 'apple', 'cherry', 'raspberry', 'banana']
+sorted(fruits,key=len)
