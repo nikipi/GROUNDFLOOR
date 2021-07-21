@@ -25,3 +25,100 @@ for link in mp4_link:
                 f.write(chunk)
                 
     print('All videos downloaded')
+    
+    
+    
+    
+    # class LinkCollector:
+#     def  __init__(self,url):
+#         ## hostname from the URL///even if we pass in http://localhost:8000/some/page. html
+#         # it will still operate on the top level of the host http://localhost:8000/. T
+#         self.url = "http://%s" % urlparse(url).netloc
+#         self.collected_links = {}
+#         self.visited_links = set()
+#
+#     def notmalize_url(self,path,link):
+#         if link.startswith('http://'):
+#             return link
+#         elif link.startswith('/'):
+#             return self.url + link
+#         else:
+#             return self.url + path.rpartition( '/')[0] + '/' + link
+#
+#
+#     def collect_links(self,path='/'):
+#         full_url=self.url+path
+#
+#         self.visited_links.add(full_url)
+#         page =str(urlopen(full_url).read())
+#         links = Link_Re.findall(page)
+#
+#         links ={self.notmalize_url(path, link) for link in links }
+#         self.collected_links[full_url] = links
+#
+#         for link in links:
+#             if link.endswith('/'):
+#               self.collected_links.setdefault(link, set())
+#
+#         unvisited_links =links.difference(self.visited_links)
+#
+#         for link in unvisited_links:
+#             if link.endswith('/'):
+#                 try:
+#                  self.collect_links(urlparse(link).path)
+#                 except:
+#                     pass
+#
+#
+#
+#
+#
+# if __name__ == "__main__":
+#     collector  = LinkCollector('https://www.yulunikipi.com/')
+#     collector.collect_links()
+#     for link, item in collector.collected_links.items():
+#         print("{}: {}".format(link, item))
+
+
+    # for link,item in collector.collected_links.items():
+    #     print('{}:{}'.format(link,item))
+#
+# def notmalize_url(url, path, link):
+#     if link.startswith('http://'):
+#         return link
+#     elif link.startswith('/'):
+#         return url + link
+#     else:
+#         return url + path.rpartition('/')[0] + '/' + link
+# #
+# visited_links={}
+# collected_links={}
+#
+# def collect_links(url,path='/'):
+#         full_url=url+path
+#         visited_links.add(full_url)
+#         page =str(urlopen(full_url).read())
+#         links = Link_Re.findall(page)
+#
+#         links ={notmalize_url(path, link) for link in links}
+#         collected_links[full_url] = links
+#         for link in links:
+#             collected_links.setdefault(link, set())
+#
+#
+#         unvisited_links =links.difference(visited_links)
+#         for link in unvisited_links:
+#             print(link)
+#
+#
+
+
+#
+
+#
+# print(notmalize_url('http://localhost:8000/','/','http://wang.com'))
+# print(notmalize_url('http://localhost:8000/','/','/wang.com'))
+# print(notmalize_url('http://localhost:8000/','/','wang.com'))
+## http://wang.com
+## http://localhost:8000//wang.com
+## http://localhost:8000//wang.com
