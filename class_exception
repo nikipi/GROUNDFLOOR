@@ -92,3 +92,27 @@ except InvalidWithdrawal as e:
     print('I am sorry, but your withdrawal is more than'
           'your balance by ${}'.format(e.overage()))
     raise
+    
+    
+class BingoCage:
+    def __init__(self,items):
+        self._items = list(items)
+        random.shuffle(self._items)
+
+    def pick(self):
+        try:
+            return self._items.pop()
+        except IndexError:
+            raise LookupError('pick from empty BingoCage')
+
+    def __call__(self):
+        return self.pick()
+
+
+bingo1=BingoCage(range(3))
+
+bingo1.pick()
+print(bingo1._items)
+bingo1.pick()
+bingo1.pick()
+print(bingo1._items)
