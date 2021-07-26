@@ -1,0 +1,4 @@
+from pathlib import Path
+
+path=Path('/Users/ypi/Desktop/new/haha')
+path.mkdir()
