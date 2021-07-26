@@ -1,0 +1,27 @@
+
+def find_count(dirt,sffuix,texttofind):
+    path=Path(dirt)
+    total=0
+    for file in path.iterdir():
+        if file.suffix == sffuix:
+          with open(file, "rt") as fin:
+              filedata=fin.read()
+              freq=0
+              freq=filedata.count(texttofind)
+          total+=freq
+    print(total)
+
+def find_replace(dirt,sffuix,texttofind,texttoreplace):
+    path=Path(dirt)
+
+    for file in path.iterdir():
+        if file.suffix == sffuix:
+          with open(file, "rt") as fin:
+              filedata=fin.read()
+              filedata=filedata.replace(texttofind,texttoreplace)
+              with open(file,'w') as fout:
+                  fout.write(filedata)
+
+
+
+find_replace('/Users/ypi/Desktop/dublin1','.txt','1','2')
