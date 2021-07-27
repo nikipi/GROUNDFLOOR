@@ -25,6 +25,18 @@ for idx,num in enumerate(data):
     print('index:', idx,'number',num)
     print('index is %d and the value is %s' %(idx,num))
     
+# enumerate --- index,,, value
+
+import sys
+# filename=sys.argv[0]
+# print(filename)
+
+filename='/Users/ypi/Desktop/dublin1/a.txt'
+
+with open(filename) as file:
+    for index, line in enumerate(file):
+        print('{}:{}'.format(index+1,line), end='')
+    
 
 
 
