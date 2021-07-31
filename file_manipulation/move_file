@@ -1,0 +1,4 @@
+for filename in Path('/Users/ypi/Desktop/dublin1/').iterdir():
+   if filename.suffix =='.txt':
+       shutil.move(filename, '/Users/ypi/Desktop/dublin/a.txt')
+# shutile.move(original_path, destination_path)
