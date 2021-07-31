@@ -36,3 +36,24 @@ my_tag={'name':"img",
         'src':'sunset.jpg','cls':'framed',}
 
 print(tag(**my_tag))
+
+
+emails = ("a@example.com", "b@example.com","c@example.com","d@example.com")
+message = {
+'emails': emails,
+'subject': "You Have Mail!",
+    'message': "Here's some mail for you!" }
+
+
+template='''
+From: <{}>
+TO: <{}>
+Subject: {}
+Content: {}=
+
+'''
+
+
+
+for i in range(1,len(emails)):
+ print(template.format(message['emails'][0],message['emails'][i],message['subject'],message['message']))
