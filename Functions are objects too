@@ -73,7 +73,20 @@ another_function(second_function)
 
 
 
+def my_function(a,b):
+    print(a+b)
+my_function.description='Silly'
 
+def second_function():
+    print('The second was called')
+second_function.description = 'Siller'
+
+def another_function(fx,*args):
+    print(fx.description)
+    print('Now call the function')
+    fx(*args)
+
+another_function(my_function,1,5)
 
 
 
