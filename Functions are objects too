@@ -56,6 +56,22 @@ timer.run()
 
 
 
+def my_function():
+    print('The function was called')
+my_function.description='Silly'
+
+def second_function():
+    print('The second was called')
+second_function.descroption = 'Siller'
+
+def another_function(fx):
+    print(fx.descroption)
+    print('Now call the function')
+    fx()
+
+another_function(second_function)
+
+
 
 
 
