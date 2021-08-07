@@ -137,3 +137,27 @@ with open('/Users/ypi/Desktop/dublin1/f.txt') as file:
 
 # opentag current node is working node  00-00 closetag make current_node back to parent 
 # in this way two continuous opentag make the first one parent node 
+
+
+import xml.etree.ElementTree as ET
+
+tree = ET.parse('/Users/ypi/Desktop/dublin1/f.txt')
+# root the first node
+root = tree.getroot()
+
+print(root.tag)
+print(root.attrib)
+
+# for child in root:
+#     print(child.tag +':'+ child.text)
+
+for child in root.iter():
+    print(child.tag +':'+ child.text)
+
+
+print([elem.tag for elem in root.iter()])
+
+# print(ET.tostring(root, encoding='utf8').decode('utf8'))
+
+for title in root.iter('title'):
+    print(title.text)
