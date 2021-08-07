@@ -1,0 +1,112 @@
+import pickle
+import time
+#
+#
+class User():
+    def __init__(self, username, password):
+        self.username = username
+        self.password = self._encrypt_pw(password)
+        self.is_logged_in = False
+
+    def _encrypt_pw(self,password):
+            hash_string = (self.username + password)
+            hash_string = hash_string.encode('utf8')
+            return hashlib.sha256(hash_string).hexdigest()
+
+    def check_password(self,password):
+            encrypted = self._encrypt_pw(password)
+            return encrypted == self.password
+            
+            
+            
+            
+################# handle error
+
+class UsernameAlreayExists(AuthException):
+    pass
+
+class PasswordTooShort(AuthException):
+    pass
+
+
+
+# get the external data for login verfication and user creating
+
+
+curr_base = []
+with open("/Users/ypi/Desktop/user.p", 'rb') as fr:
+    try:
+        while True:
+            curr_base.append(pickle.load(fr))
+    except EOFError:
+        pass
+
+
+
+
+print(curr_base)
+print(len(curr_base))
+
+
+new_dict={}
+for user in curr_base:
+        for name in user.keys():
+            user_name=name
+        for value in user.values():
+            user_data=value
+        new_dict[user_name]=user_data
+print(new_dict)
+
+### Create a data base first
+# example_user={'username':User('username','password')}
+# pickle.dump(example_user, open("/Users/ypi/Desktop/user.p", "wb"))
+
+
+
+class Login_Page:
+    def __init__(self):
+            self.username = None
+
+
+    def display(self):
+        if_account=input('Do you have an account:')
+        if_account=if_account.lower()
+        if if_account=='yes':
+            username = input('Username: ')
+            password = input('Password: ')
+            try_log_user = User(username,password )
+            try:
+
+                    try_log_user = new_dict[username]
+            except KeyError:
+                    raise InvalidUsername(username,user)
+
+            if not try_log_user.check_password(password):
+                    print('Incorrect Password')
+                    raise InvalidPassword(username,user)
+
+
+        else:
+            print('Please create an account')
+            time.sleep(1)
+            username = input('Username: ')
+            password = input('Password: ')
+            new_user = {username: User(username, password)}
+
+            if username in new_dict:
+                    print('UserName alreay exists!')
+                    raise UsernameAlreayExists(username)
+            if len(password)<6:
+                    print('Need a longer password')
+                    raise PasswordTooShort(username)
+
+            with open("/Users/ypi/Desktop/user.p", "ab") as file:
+                 pickle.dump(new_user, file,pickle.HIGHEST_PROTOCOL)
+
+            print('Your account is created')
+
+
+
+
+
+Login_Page().display()
