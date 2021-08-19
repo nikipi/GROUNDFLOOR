@@ -1,0 +1,37 @@
+products_count = {'apple': 3, 'orange': 2}
+products_price = {'apple': 5, 'orange': 3}
+
+
+def accept(product):
+    products_count[product]=products_count[product]-1
+    print('Please get your product')
+
+
+def no_product():
+    print('No such product')
+
+
+def sold_out():
+    print('Sold out')
+
+
+def more_money():
+    print('Put more money')
+
+
+
+def state():
+    product = input('Enter Product:')
+    price = int(input('Enter price:'))
+    if product not in products_count:
+        return no_product()
+    elif products_count[product] <=0:
+        return sold_out()
+    elif products_price[product]>price:
+        return more_money()
+    else:
+        return accept(product)
+
+for i in range(8):
+    state()
+print(products_count)
