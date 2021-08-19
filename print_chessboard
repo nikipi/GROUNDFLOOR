@@ -1,0 +1,21 @@
+field = [[1 for i in range(4)] for j in range(4)]
+
+print(field)
+
+
+def draw_hor_separator():
+  line = '+' + ('+------' * 4 + '+')[1:]
+  
+  print(line)
+
+
+
+
+def draw_row(row):
+            print(''.join('|{: ^5} '.format(num) if num > 0 else '|      ' for num in row) + '|')
+
+
+for row in field: 
+  draw_hor_separator()
+  draw_row(row)
+draw_hor_separator()
