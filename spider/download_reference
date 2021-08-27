@@ -1,0 +1,82 @@
+from scihub import SciHub
+
+sh = SciHub()
+#
+# keywords = "Algorithm government"
+#
+#
+# result = sh.search(keywords, limit=10)
+#
+# print(result)
+#
+# for index, paper in enumerate(result.get("papers", [])):
+#
+#     sh.download(paper["url"], path=f"files/{keywords.replace(' ', '_')}_{index}.pdf")
+
+import PyPDF2
+import os
+import re
+
+
+import PyPDF2
+import os
+import re
+from bs4 import BeautifulSoup
+from urllib.request import urlopen
+import requests
+import fitz
+import re
+
+def main():
+    os.chdir('/Users/ypi/Desktop')  # PDF文件存放的位置
+    file = input('输入PDF文件名：')
+    with fitz.open(file) as pdf:
+        text = ""
+        for page in pdf:
+            # extract text of each PDF page
+            text += page.getText()  # 打开PDF文件
+
+    links = all_links_in_pdf(text)
+
+    os.chdir('/Users/ypi/Desktop/dublin1')
+
+    download(links)
+    print('下载完成')
+  # 设置参考文献保存的位置
+     # 下载文献
+
+def all_links_in_pdf(text):
+    url_regex = r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=\n]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"
+
+    # re.finditer(pattern, string, flags=0)
+
+    urls = []
+    # extract all urls using the regular expression
+    # have several .... for ... in ....
+    for match in re.finditer(url_regex, text):
+        url = match.group()
+        if url.startswith('https://doi.org'):
+            print("[+] URL Found:", url)
+            urls.append(url)
+    print("[*] Total URLs extracted:", len(urls))
+    return urls
+
+
+def download(links):
+    for i in range(len(links)):  # 指定参考文献下载，如需全部下载用for i0 in range(links.shape[0]):
+        doi = links[i][16:]
+        urls = f'https://sci.bban.top/pdf/{doi}.pdf#view=FitH'
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
+        }
+        r = requests.get(urls, headers=headers)
+        title = re.findall("(.*?)/", doi)
+        print('下载第',i,'篇')
+        with open(f"{title[0]}.pdf", 'wb')as f:
+            f.write(r.content)
+
+
+
+
+if __name__ == '__main__':
+        main()
