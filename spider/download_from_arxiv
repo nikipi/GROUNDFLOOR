@@ -1,0 +1,68 @@
+import requests
+from lxml import etree
+import time
+import re
+from bs4 import BeautifulSoup
+import urllib
+
+
+def get_result(term):
+    a=term.split()
+    term='+'.join(a)
+    url='https://arxiv.org/search/?query={term}&searchtype=all&source=header'
+    
+    
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36",
+
+    }
+    r = requests.get(url, headers=headers)
+    r.encoding = 'utf-8'
+    b=[]
+
+    soup = BeautifulSoup(r.content,features="lxml")
+
+    links = soup.find_all("a")
+
+    for link in links:
+        if 'pdf' in link.text:
+            b.append(link.get("href"))
+    print('{} results found'.format(len(b)))
+    return b
+
+def download(links):
+    for i in range(len(links)):
+
+        response = urllib.request.urlopen(links[i])
+        file = open(str(i) + ".pdf", 'wb')
+        file.write(response.read())
+
+        file.close()
+
+import os
+
+def main():
+    term =input('search for:')
+    links = get_result(term)
+
+
+    os.chdir('/Users/ypi/Desktop/dublin1')
+
+    import ssl
+    ssl._create_default_https_context = ssl._create_unverified_context
+
+    download(links)
+
+    print('下载完成')
+  # 设置参考文献保存的位置
+     # 下载文献
+
+
+
+if __name__ == '__main__':
+        main()
+
+
+
+
+get_result('machine learning')
