@@ -1,0 +1,30 @@
+
+
+def batch_rename(dir,name_list,add_list):
+    files = os.listdir(dir)
+
+
+    new_name_list = list(map(''.join, zip(name_list, add_list)))
+    i = -1
+    for file in files:
+        split_file = os.path.splitext(file)
+        # filename suffix_name
+        file_name, suffix= split_file
+
+        if file_name in name_list:
+            i = i+ 1
+            file_name=file_name+suffix
+            newname= new_name_list[i]+suffix
+            print(file_name)
+            print(newname)
+
+
+            os.rename(
+                os.path.join(dir, file_name),
+                os.path.join(dir, newname)
+            )
+
+
+
+
+batch_rename('/Users/ypi/Desktop/dublin1',['a','b','f'],['a','b','c'])
