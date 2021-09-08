@@ -2,3 +2,22 @@ df['HBP'] = np.where(df['High Blood Pressure']=="YES", 1, 0)
 
 # add a new columns
 # meet the condition is 1,or is 0
+
+
+one-hot 
+
+
+## get_dummies    
+### will add many extra column
+
+df_dummies = pd.get_dummies(df)
+
+
+### factorize 
+## ealier appear smaller number
+
+newdf = df.apply(lambda x: pd.factorize(x)[0])
+
+
+cor= newdf.corr()
+
