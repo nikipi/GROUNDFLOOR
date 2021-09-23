@@ -1,0 +1,28 @@
+import numpy as np
+import pandas as pd
+
+a = np.ones((11,10))
+
+for i in range(len(a)):
+    a[i,:i] = np.nan
+
+d= pd.DataFrame(data=a)
+print(d)
+
+print('--------------------------------------------')
+
+# delete row if any nan
+print(d.dropna(axis=0,how='any'))
+
+# delete row if all nan
+print('--------------------------------------------')
+print(d.dropna(axis=0,how='all'))
+
+## delte column  is non-nan < 3
+print('--------------------------------------------')
+print(d.dropna(axis='columns',thresh=3))
+
+##   delete row if 0,5,6,7 is nan
+
+print('--------------------------------------------')
+print(d.dropna(axis='index',how='all',subset=[0,5,6,7]))
