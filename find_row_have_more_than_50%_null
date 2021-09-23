@@ -1,0 +1,23 @@
+import pandas as pd
+a=pd.DataFrame(data=[['Apple',5,0],
+                   ['Banana',10,1],
+                   ['Cherry',0,0],
+                   ['Dates',3,0],
+                   ['Eggfruit',7,1]],
+             columns = ['Fruits','Quantity','likes'],
+             index=[1,2,3,4,5])
+
+
+print(a)
+
+
+b=a.apply(lambda x: sum(x==0)/len(x),axis=1)
+
+
+## dataframe.apply(lambda x: sum(x==0) / len(x),axis =1) 
+
+
+print(a.index)
+print(a.iloc[a.index.isin(b[b>0.5].index)])
+
+## dataframe.iloc[df.index.isin(df2[df2>000]
