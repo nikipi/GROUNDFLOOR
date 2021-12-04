@@ -1,0 +1,6 @@
+CASE  [Ship Mode]
+WHEN "Same Day" THEN 0
+WHEN "First Class" THEN 1
+WHEN "Second Class" THEN 3
+WHEN "Standard Class" THEN 6
+END
