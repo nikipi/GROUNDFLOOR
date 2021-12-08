@@ -1,0 +1,54 @@
+
+import pandas as pd
+import numpy as np
+np.random.seed(5)
+df = pd.DataFrame(np.random.randint(100, size=(100, 6)),
+                  columns=list('ABCDEF'),
+                  index=['R{}'.format(i) for i in range(100)])
+
+print(df.head())
+
+     A   B   C   D   E   F
+R0  99  78  61  16  73   8
+R1  62  27  30  80   7  76
+R2  15  53  80  27  44  77
+R3  75  65  47  30  84  86
+R4  18   9  41  62   1  82
+
+
+
+print(df.loc['R2':'R4', 'C':'D'])
+
+
+
+# get the list if index for a < 50
+
+con=df[df['A']<50].index.tolist()
+
+
+
+
+# add new column -- big but for the index above --small
+
+df['new'] = 'big'
+
+df['new'][df.index.isin(con)] = 'small'
+
+
+print(df)
+
+
+#      A   B   C   D   E   F    new
+R0   99  78  61  16  73   8    big
+R1   62  27  30  80   7  76    big
+R2   15  53  80  27  44  77  small
+R3   75  65  47  30  84  86    big
+R4   18   9  41  62   1  82  small
+..   ..  ..  ..  ..  ..  ..    ...
+R95  19   7  76  66  56   0  small
+R96  57  31  86  74  37  64    big
+R97  51  12  59  25  39  33    big
+R98  24   7  68  81  69  69  small
+R99  81  20  86   1  74  70    big
+
+
