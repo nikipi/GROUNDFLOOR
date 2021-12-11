@@ -1,0 +1,31 @@
+```flow
+st=>start: Start
+ipt=>inputoutput: Input X
+op=>operation: X+1
+cond=>condition: Bigger than guess?
+sub=>subroutine: Subroutine
+io=>inputoutput: Output X
+ed=>end: End
+
+st->ipt->op->cond
+cond(yes)->io->ed
+cond(no)->sub->io->ed
+
+```
+
+```flow
+st=>start: Start research
+e=>end: Run analysis
+op1=>operation: find people
+cond=>condition: meet required?
+op2=>operation: create database
+op3=>operation: ask for help
+op4=>operation: find enough
+
+st->op1->cond
+cond(yes)->op2->e
+cond(no)->op3->op4(left)->op2->e
+```
+
+
+http://flowchart.js.org/
