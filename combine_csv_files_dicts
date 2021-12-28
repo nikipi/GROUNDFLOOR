@@ -1,0 +1,14 @@
+date_info = {'year': "2020", 'month': "01", 'day': "01"}
+track_info = {'artist': "Beethoven", 'title': 'Symphony No 5'}
+all_info = {**date_info, **track_info} 
+print(all_info)
+
+
+#
+# extension = 'csv'
+# all_filenames = [i for i in glob.glob('*.{}'.format(extension))]
+#
+# all_filenames=['/Users/ypi/Desktop/dataset1.csv','/Users/ypi/Desktop/dataset2.csv']
+# combined_csv = pd.concat([pd.read_csv(f,encoding='gb2312') for f in all_filenames ])
+# #export to csv
+# combined_csv.to_csv( " /Users/ypi/Desktop/combined_csv.csv", encoding='gbk',replace=True)
