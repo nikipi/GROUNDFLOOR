@@ -1,0 +1,206 @@
+import numpy as np
+import xgboost as xgb
+import os
+import glob
+import pandas as pd
+
+
+
+factors = ['OperatingRevenueGrowRate',
+       'NetProfitGrowRate', 'TVSTD20', 'TVSTD6', 'TVMA20', 'TVMA6', 'BLEV',
+       'MLEV', 'CashToCurrentLiability', 'CurrentRatio', 'REC', 'DAREC',
+       'GREC', 'DASREV', 'SFY12P', 'LCAP', 'ASSI', 'LFLO', 'TA2EV', 'PE', 'PB',
+       'PS', 'SalesCostRatio', 'PCF', 'TotalProfitGrowRate', 'CTOP', 'MACD',
+       'DEA', 'DIFF', 'RSI', 'PSY', 'BIAS10', 'ROE', 'ROA', 'ROA5', 'ROE5',
+       'DEGM', 'GrossIncomeRatio', 'CurrentAssetsTRate', 'FixedAssetsTRate',
+       'PLRC6', 'REVS5', 'REVS10', 'REVS20', 'HSIGMA', 'ChaikinOscillator',
+       'ChaikinVolatility', 'Aroon', 'DDI', 'MTM', 'MTMMA', 'VOL10', 'VOL20',
+       'VOL5', 'VOL60', 'DDNSR', 'Hurst']
+
+
+def get_factor_by_day(tdate):
+    cnt = 0
+    while True:
+        try: 
+            x= DataAPI.MktStockFactorsOneDayGet(tradeDate= tdate, secID=u'', ticker=u'',
+                                                       field=['ticker','tradeDate']+ factors, pandas='1')
+            
+            x['tradeDate']=x['tradeDate'].apply(lambda x: x.replace('-',''))
+            return x
+        except Exception as e:
+            cnt+=1
+            if cnt>=2:
+                print('error get factor data: ', tdate)
+                break
+                
+
+
+
+if __name__ == '__main__':
+    trade_date = DataAPI.TradeCalGet(exchangeCD=u'XSHG',beginDate='20070101', endDate= '20171231',field=u'',pandas='1')
+    trade_date = trade_date[trade_date.isMonthEnd == 1]
+    
+    print('begin to get factor value for each stock')
+    
+    date_list = [tdate.replace('-','') for tdate in trade_date.calendarDate.values if tdate <'20171101']
+    factor_csv= pd.DataFrame()
+    for date in date_list:
+        frame_list = get_factor_by_day(date)
+        factor_csv = pd.concat([factor_csv,frame_list])
+
+
+factor_csv.reset_index(inplace=True,drop= True)
+stock_list= np.unique(factor_csv.ticker.values)
+
+######## stock info and industry info ############
+print('\nbegin to get praice ratio for stocks and index...')
+
+
+###### chgPct  Current month up or down, current month's closing price / current month's previous closing price - 1 #####
+
+chgframe = DataAPI.MktEqumAdjGet(secID=u"", ticker=stock_list, monthEndDate=u"", isOpen=u"", beginDate=u"20070131",
+                                      endDate=u"20171130", field=['ticker', 'endDate', 'tradeDays', 'chgPct', 'return'], pandas="1")
+
+chgframe['endDate'] = chgframe['endDate'].apply(lambda x: x.replace("-", ""))
+
+
+hs300_chg_frame = DataAPI.MktIdxmGet(beginDate=u"20070131", endDate=u"20171130", indexID=u"000300.ZICN", ticker=u"",
+                                         field=['ticker', 'endDate', 'chgPct'], pandas="1")
+
+hs300_chg_frame['endDate'] = hs300_chg_frame['endDate'].apply(lambda x: x.replace("-", ""))
+
+hs300_chg_frame.columns = ['HS300','endDate','HS300_chgPct']
+
+
+hs300_chg_frame.head()
+
+
+########### active_return 
+
+pframe = chgframe.merge(hs300_chg_frame,on=['endDate'], how = 'left')
+pframe['active_return'] = pframe['chgPct'] - pframe['HS300_chgPct']
+pframe = pframe[['ticker','endDate','return','active_return']]
+pframe.rename(columns={'return':'abs_return'}, inplace= True)
+
+###### align data ########
+
+month_frame = trade_date[['calendarDate','isOpen']]
+month_frame['prev_month_end'] = month_frame['calendarDate'].shift(1)
+month_frame = month_frame[['prev_month_end','calendarDate']]
+month_frame.columns=['month_end','next_month_end']
+month_frame.dropna(inplace= True)
+month_frame['month_end'] = month_frame['month_end'].apply(lambda x: x.replace("-", ""))
+month_frame['next_month_end'] = month_frame['next_month_end'].apply(lambda x: x.replace("-", ""))
+
+factor_frame = factor_csv.merge(month_frame, left_on=['tradeDate'],right_on=['month_end'],how='left')
+
+######### get the return for next month ######
+
+factor_frame = factor_frame.merge(pframe, left_on=['ticker', 'next_month_end'], right_on=['ticker', 'endDate'])
+
+del factor_frame['month_end']
+del factor_frame['endDate']
+
+factor_frame.to_csv('factor_chpct.csv', chunksize=1000)
+
+
+######### industry info 
+sw_map_frame = DataAPI.EquIndustryGet(industryVersionCD=u"010303", industry=u"", secID=u"", ticker=u"", intoDate=u"",field=[u'ticker', 'secShortName', 'industry', 'intoDate', 'outDate', 'industryName1', 'industryName2', 'industryName3', 'isNew'], pandas="1")
+sw_map_frame = sw_map_frame[sw_map_frame.isNew == 1]
+
+input_frame = pd.read_csv('factor_chpct.csv', dtype={'ticker': np.str, 'tradeDate': np.str,
+                                                    'next_month_end':np.str}, index_col=0)
+
+factor_name = [ x for x in input_frame.columns if x not in [' ticker','tradeDate','next_month_end',
+                                                          'abs_return','active_return']  ]
+
+
+def paper_winsorize(v, upper, lower):
+    if v > upper:
+        v = upper
+    elif v < lower:
+        v = lower
+    return v 
+
+def winsorize_by_date(cdate_input):
+    median_v = cdate_input.median()
+
+    for a_factor in factor_name:
+        dm = median_v[a_factor]
+        new_factor_series = abs(cdate_input[a_factor]- dm)
+        dm1 = new_factor_series.median()
+        upper = dm + 5*dm1
+        lower = dm - 5*dm1
+        cdate_input[a_factor] = cdate_input[a_factor].apply(lambda x: paper_winsorize(x,upper, lower))
+        
+    return cdate_input
+
+def fillna_industry(cdate_input):
+    func_input = cdate_input.copy()
+    func_input = func_input.merge(sw_map_frame[['ticker', 'industryName1']], on=['ticker'], how='inner')
+
+    func_input.loc[:, factor_name] = func_input.loc[:, factor_name].fillna(func_input.groupby('industryName1')[factor_name].transform('mean'))
+    return func_input.fillna(0)
+
+def winsorize_fillna_date(tdate):
+    nt = 0 
+    while True:
+        try:
+            cdate_input = input_frame[input_frame.tradeDate == tdate]
+            cdate_input = winsorize_by_date(cdate_input)
+            cdate_input = fillna_industry(cdate_input)
+            cdate_input.loc[:, a_factor] = standardize(neutralize(cdate_input[a_factor], target_date=tdate,
+                        exclude_style_list=['BETA', 'RESVOL', 'MOMENTUM', 'EARNYILD', 'BTOP', 'GROWTH', 'LEVERAGE', 'LIQUIDTY']))
+            cdate_input.set_index("ticker", inplace = True)
+            
+            return cdate_input
+        
+        except Exception as e:
+            cnt +=1
+            if cnt >=3:
+                cdate_input = input_frame[input_frame.tradeDate == tdate]
+                
+                cdate_input = fillna_industry(cdate_input)
+                cdate_input.set_index('ticker', inplace=True)
+                return cdate_input
+
+
+
+
+date_list = [tdate for tdate in np.unique(input_frame.tradeDate.values) if int(tdate) > 20061231]
+dframe_csv= pd.DataFrame()
+for date in date_list:
+    frame_list = winsorize_fillna_date(date)
+    dframe_csv = pd.concat([dframe_csv,frame_list])
+    
+dframe_csv.to_csv( "after_prehandle.csv", encoding='gbk', chunksize=1000)       
+print('finished!')
+
+
+def get_label_by_return(filename):
+    df = pd.read_csv(filename, dtype={"ticker": np.str, "tradeDate": np.str, "next_month_end": np.str},index_col=0, encoding='gb2312').fillna(0.0)
+    new_df = None
+    for date, group in df.groupby('tradeDate'):
+            quantile_30 = group['active_return'].quantile(0.3)
+            quantile_70 = group['active_return'].quantile(0.7)
+            
+            def _get_label(x):
+                if x >= quantile_70:
+                    return 1
+                elif x <=quantile_30:
+                    return -1
+                else:
+                    return 0
+            
+            group['label'] = group['active_return'].apply(lambda x : _get_label(x))
+            
+            if new_df is None:
+                new_df = group 
+            else:
+                new_df = pd.concat([new_df, group ], ignore_index= True)
+            
+    return new_df
+                
+new_df = get_label_by_return("after_prehandle.csv")
+
+new_df.to_csv("dataset.csv", encoding='gbk', chucksize=1000)
