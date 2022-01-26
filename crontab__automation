@@ -1,0 +1,14 @@
+##########
+## preference --- privacy -----full disk access
+
+## add cron
+
+which python 
+
+* * * * * /Users/ypi/miniconda3/bin/python /Users/ypi/Desktop/try.py
+
+## crontab -l list
+## crontab -e. editor 
+i :wq
+
+## 
