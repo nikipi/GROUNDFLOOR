@@ -1,0 +1,141 @@
+import streamlit as st
+import numpy as np
+
+import matplotlib.pyplot as plt
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+# from witwidget.notebook.visualization import WitWidget, WitConfigBuilder
+
+
+
+from sklearn.decomposition import PCA
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import RandomForestClassifier
+import plotly.express as px
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, confusion_matrix
+import seaborn as sns
+import xgboost as xgb
+from xgboost.sklearn import XGBClassifier
+
+
+from sklearn.metrics import accuracy_score
+import pandas as pd
+import shap
+
+st.set_page_config(
+    page_title="Visually Explore Machine Learning Prediction",
+    layout="centered",
+    initial_sidebar_state="expanded",
+    page_icon="🎈",
+)
+
+
+st.set_option('deprecation.showPyplotGlobalUse', False)
+st.set_option('deprecation.showfileUploaderEncoding', False)
+
+# st.title('Demo for Interactive ML ')
+
+st.title("""
+ Visually Explore Machine Learning Prediction
+""")
+
+from enum import Enum
+from io import BytesIO, StringIO
+from typing import Union
+
+import pandas as pd
+import streamlit as st
+
+STYLE = """
+<style>
+img {
+    max-width: 100%;
+}
+</style>
+"""
+
+FILE_TYPES = ["csv",'xlsx']
+
+
+
+
+
+# def get_dataset(upload_file,name):
+#     if upload_file is not None:
+#         df= pd.read_csv(upload_file, encoding="utf8")
+#         # replace all non alphanumeric column names to avoid lgbm issue
+#         df.columns = [
+#             "".join(c if c.isalnum() else "_" for c in str(x)) for x in df.columns
+#         ]
+#     if name == 'Iris':
+#         data = datasets.load_iris()
+#
+#     else:
+#         data = datasets.load_wine()
+#
+#     X = data.data
+#     y = data.target
+#     return X, y
+
+
+
+
+
+st.set_option('deprecation.showfileUploaderEncoding', False)
+
+
+
+# def datapro(name):
+
+def getdf():
+
+         data = datasets.load_iris()
+         df = pd.DataFrame(data.data, columns=['Sepal Length',
+                                         'Sepal Width',
+                                         'Petal Length',
+                                          'Petal Width'])
+         df['Class'] = 'Setosa'
+         df.loc[50:100, 'Class'] = 'Versicolor'
+         df.loc[100:150, 'Class'] = 'Virginica'
+         # if st.checkbox('Show df'):
+         #     st.write(df)
+         return df
+
+df=getdf()
+
+st.write('Shape of dataset:', df.shape)
+
+X_Value = st.selectbox(
+    'X Value',
+    ('Sepal Length',
+                                         'Sepal Width',
+                                         'Petal Length',
+                                          'Petal Width')
+)
+
+Y_Value = st.selectbox(
+    'Y Value',
+    ('Sepal Length',
+    'Sepal Width',
+    'Petal Length',
+    'Petal Width')
+)
+
+
+
+# with st.echo(code_location='below'):
+#     import plotly.express as px
+
+fig = px.scatter(df,
+        x=df[X_Value],
+        y=df[Y_Value],
+        color="Class"
+    )
+fig.update_layout(
+        xaxis_title=X_Value,
+        yaxis_title=Y_Value,
+    )
+
+st.write(fig)
