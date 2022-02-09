@@ -1,0 +1,22 @@
+from pycountry_convert import country_alpha2_to_continent_code, country_name_to_country_alpha2
+import pandas as pd
+
+df=pd.read_csv('/Users/ypi/Desktop/Sheet1 .csv',engine='python')
+df.head()
+
+import pycountry_convert as pc
+country_continent_name=[]
+for country in df['Country']:
+    try:
+        country_alpha2 = pc.country_name_to_country_alpha2(country)
+        country_continent_code = pc.country_alpha2_to_continent_code(country_alpha2)
+        name = pc.convert_continent_code_to_continent_name(country_continent_code)
+        country_continent_name.append(name)
+    except:
+        country_continent_name.append("Unknown")
+        
+#     country_continent_name.append(name)
+
+df['region'] = country_continent_name
+
+df.to_csv('/Users/ypi/Desktop/Sheet1 .csv')
