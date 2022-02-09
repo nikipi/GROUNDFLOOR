@@ -23,3 +23,13 @@ with open('/Users/ypi/Desktop/file.txt') as f:
 r = re.compile("\d{3}-\d{3}-\d{4}|\(\d{3}\) \d{3}-\d{4}")
 new_num = list(filter(r.match, nums))
 print(new_num)
+
+
+
+a_string = 'abc xxx abc yyy'
+re.sub(r'xxx|yyy','abc',a_string)
+# Replace "xxx" or "yyy" with "abc"
+
+a_string = 'abc xxx abc xxx'
+re.sub('xxx','abc',a_string,1)
+#Replace first "xxx" with "abc"
