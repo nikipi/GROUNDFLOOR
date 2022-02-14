@@ -1,0 +1,41 @@
+### UCL ML DATASET 
+
+import pandas as pd
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+
+fileurl   = r'/Users/ypi/Desktop/OnlineRetail.xlsx'
+
+
+df = pd.read_excel(fileurl)
+print(df.head())
+print(df.columns)
+
+###(['InvoiceNo', 'StockCode', 'Description', 'Quantity', 'InvoiceDate',
+       'UnitPrice', 'CustomerID', 'Country'],
+      dtype='object')
+      
+    
+### MOST POPULAR ITEM
+df.groupby('Description').agg(Total_Orders=('InvoiceNo','nunique'), Total_Quantity=('Quantity','sum')    ).sort_values(by = 'Total_Orders',ascending= False
+).head(15)
+
+
+
+## item martix
+
+df_item = df.pivot_table(index = 'InvoiceNo', columns = ['Description'], values='Quantity').fillna(0)
+
+
+
+def get_recommendation(df,item):
+    recommendations = df.corrwith(df[item])
+    recommendations.dropna(inplace= True)
+    recommendations  = pd.DataFrame(recommendations, columns=['correlation']).reset_index()
+    recommendations = recommendations.sort_values(by='correlation',ascending= False)
+    
+    return recommendations
+    
+    
+recommendations = get_recommendation(df_item, 'WHITE HANGING HEART T-LIGHT HOLDER')
+recommendations.head()
