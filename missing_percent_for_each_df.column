@@ -1,0 +1,13 @@
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+nan_count=((df.isna().sum()/df.shape[0])*100).sort_values(ascending=False)
+### only focus on the variable with missing value
+nan_count=nan_count[nan_count>0]
+           
+plt.figure(figsize=(15,10))
+plt.xlabel('Features', fontsize=15)
+plt.ylabel('Percent of missing values', fontsize=15)
+plt.title('Percent missing data by feature', fontsize=15)
+plt.xticks(rotation=90)
+sns.barplot(nan_count.index, nan_count.values)
