@@ -1,0 +1,33 @@
+a=[4,2,7,6,5,8,1,3]
+
+def cycle(x):
+  idlist = [x for x in range(len(x))]
+  all_cycle = []
+  cycle =[]
+  for i in range(len(x)):
+      if i+1 == x[i]:
+         all_cycle.append([i+a])
+         idlist.remove(i)
+  resmin = min(idlist)
+  id = resmin
+  while resmin not in cycle:
+        id = x[id]-1
+        if id in idlist:
+           cycle.append(id)
+           idlist.remove(id)
+  cycle= [x+1 for i in cycle]
+  cycle.insert(0,cycle.pop())
+  all_cycle.append(cycle)
+  
+  print(sorted(all_cycle))
+  
+  
+ 
+ print(cycle(a))
+  
+      
+  
+  
+  
+      
+  
