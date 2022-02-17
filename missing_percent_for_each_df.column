@@ -11,3 +11,9 @@ plt.ylabel('Percent of missing values', fontsize=15)
 plt.title('Percent missing data by feature', fontsize=15)
 plt.xticks(rotation=90)
 sns.barplot(nan_count.index, nan_count.values)
+
+
+#### Drop the 5 most missing variables
+
+
+full_train.drop(nan_count.index[:5],axis = 1, inplace=True)
