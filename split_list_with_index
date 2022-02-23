@@ -1,0 +1,7 @@
+def lindexsplit(some_list, args):
+    if len(args)>0:
+            args = (0,) + tuple(data+1 for data in args) + (len(some_list)+1,)
+    my_list = []
+    for start, end in zip(args, args[1:]):
+        my_list.append(some_list[start:end])
+    return my_list
