@@ -1,0 +1,25 @@
+#### key takeways
+
+# 1. live an null row and an null col
+# 2. keep null range(1, ) start with row
+# 3. if itemweight>currentwieght:
+# table[row][col]=table[row-1][col]
+# else table[row][col] = max(table[row-1][col], table[row-1][currentwight-itemweight]+itemvalue)
+
+
+saving = 250
+currentValue = [175,133,109,210,97]
+
+import numpy as np
+
+value= [12,-8,19,18,36]
+
+tb= [[0 for i in range(saving+1)] for _ in range(len(value)+1)]
+
+for i in range(1, len(value)):
+    for j in range(1,saving):
+        if currentValue[i]> j:
+            tb[i][j] = tb[i-1][j]
+        else:
+            tb[i][j] = max(tb[i-1][j],tb[i-1][j-currentValue[i]]+value[i])
+print(max(map(max,tb)))
