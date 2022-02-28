@@ -1,3 +1,6 @@
+
+### counter 很好用 可以替代 dict[i]=list.count(i)
+
 from collections import Counter
 
 c1 = Counter([2,3,1,2,3,5,3,6,7,9,5,3,4,5,6,4,3,4,6])
