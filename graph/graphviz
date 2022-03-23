@@ -1,0 +1,32 @@
+
+t = graphviz.Digraph('TrafficLights', filename='traffic_lights.gv',
+                     engine='neato')
+
+t.attr('node', shape='box')
+for i in (2, 1):
+    t.node(f'gy{i:d}')
+    t.node(f'yr{i:d}')
+    t.node(f'rg{i:d}')
+
+t.attr('node', shape='circle', fixedsize='true', width='0.9')
+for i in (2, 1):
+    t.node(f'green{i:d}')
+    t.node(f'yellow{i:d}')
+    t.node(f'red{i:d}')
+    t.node(f'safe{i:d}')
+
+
+t.edge('yr1', 'yellow2')
+t.edge('red2', 'green1')
+t.edge('rg1', 'red2')
+t.edge('red2', 'gy1')
+
+t.attr(overlap='false')
+t.attr(label=r'PetriNet Model TrafficLights\n'
+             r'Extracted from ConceptBase and layed out by Graphviz')
+t.attr(fontsize='23')
+    
+t.view()
+
+
+#### three important elements attr ----- edge ------ node
