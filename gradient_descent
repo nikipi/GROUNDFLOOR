@@ -1,0 +1,15 @@
+start  = 3 
+rate = 0.01
+precision  = 0.000000001
+previous_step_size = 1
+max_iters = 10000
+iters = 0
+df = lambda x: 2*(x+5)
+
+while previous_step_size > precision and iters < max_iters:
+    prev_x = start 
+    start = start - df(prev_x)* rate 
+    previous_step_size  = abs(start - prev_x)
+    iters += 1
+
+print('The local minimum occurs ar',start)
