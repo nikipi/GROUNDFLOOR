@@ -42,3 +42,21 @@ print(list(map(factorial,range(5))))
 print([factorial(n) for n in range(6)])
 
 print([factorial(n) for n in range(6) if n%2])
+
+
+
+s= 12312
+print(list(map(int,str(s))))
+# [1, 2, 3, 1, 2]
+
+print(list(map(int,(1,2,3))))
+print(list(map(int,'1256')))
+
+def powers(x,y,z):
+   return x**2+y**2+z**2
+
+listone = [1,2,3]
+listtwo = [1,1,1]
+listthree  = [2,2,2]
+
+print(list(map(powers,listone,listtwo,listthree)))
