@@ -1,0 +1,7 @@
+read_location['timestamp_ms'] = read_location['timestamp_ms'].astype(float) / 1000
+read_location['datetime'] = read_location['timestamp_ms'].map(
+
+
+lambda x: dt.fromtimestamp(x).strftime('%Y-%m-%d %H:%M:%S'))
+
+date_range = '{}-{}'.format(read_location['datetime'].min()[:4], read_location['datetime'].max()[:4] )
