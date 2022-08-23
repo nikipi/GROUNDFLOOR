@@ -108,6 +108,15 @@ f = ["strawberry", "kiwi", "blueberry"]
 # simply think that zip is transpose the list
 print(dict(zip(b, f)))
 
+####### F(x)
+def _zip(*sequence):
+
+    return list(map(list,zip(*sequence)))
+
+
+
+
+
 # transfer two list to dict  ---think it like transpose
 
 person= collections.namedtuple('Person','name age height')
