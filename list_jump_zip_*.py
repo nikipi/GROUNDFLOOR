@@ -66,7 +66,25 @@ L = list(range(1, 101))
 for i in L:
     if i % 7 == 0:  # i % 7==0  means remiander is 0
         print(i)
+        
+        
+        
+        
 
+list1 ,list2 =[1,7,9],[3,10,6]
+data = zip(list1, list2)
+
+
+print(data)
+data = sorted(data,key=lambda x: x[1])
+print(data)
+[(1, 3), (9, 6), (7, 10)]
+list1, list2 = map(lambda t: list(t), zip(*data))
+
+print(list1)
+[1, 9, 7]
+print(list2)
+[3,6,10]
 d = {'a', 'b', 'c'}
 for key in d:
     print(key)
