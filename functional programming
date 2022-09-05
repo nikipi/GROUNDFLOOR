@@ -1,0 +1,29 @@
+### for same data, operate different function
+### function is also input of another function
+
+
+def mutioperation(operation, data, initial):
+    operator  = initial 
+    for x in data:
+        operator = operation(operator,x)
+    return operator
+
+def my_sum(data):
+    def _add(a,b):
+        return a + b
+    return mutioperation(_add,data,0)
+
+a=my_sum(range(5))
+
+print(a)
+
+def bigger(a,b):
+    if b>a:
+        return b
+    return a 
+
+def my_max(data):
+    return mutioperation(bigger,data, -10000)
+
+b = my_max([2,4,1,3,140])
+print(b)
