@@ -1,0 +1,109 @@
+import streamlit as st
+from streamlit_echarts import st_echarts
+from vega_datasets import data
+
+def main():
+    df = data.us_employment().set_index("month").drop(columns=["nonfarm_change"])
+    st.write(df)
+    
+    means = df.mean(axis=0).map("{:.2f}".format)
+    st.write(means)
+
+    bar_options = {
+        "title": {"text": "Mean US employment this past decade"},
+        "xAxis": {
+            "type": "category",
+            "axisTick": {"alignWithLabel": True},
+            "data": means.index.values.tolist(),
+        },
+        "yAxis": {"type": "value"},
+        "tooltip": {"trigger": "item"},
+        "emphasis": {"itemStyle": {"color": "#a90000"}},
+        "series": [{"data": means.tolist(), "type": "bar"}],
+    }
+
+    clicked_label = st_echarts(
+        bar_options,
+        events={"mouseover": "function(params) {return params.name}"},
+        height="500px",
+        key="global",
+    )
+
+
+    flitered_df = df[clicked_label].sort_index()
+    line_options ={
+        'title': {'text': f"Breakdown US employment for {clicked_label }"},
+        'xAxis':{
+            'type':'category',
+            'axisTick':{'alignWithLabel':True},
+            'data':flitered_df.index.values.tolist(),
+
+
+
+        },
+        'yAxis':{'type': 'value'},
+        'tooltip':{'trigger': 'axis'},
+        "itemStyle": {"color": "#a90000"},
+        'series': [
+
+            {
+                'data':flitered_df.tolist(),
+                'type':'line'
+
+
+
+            }
+        
+        ]
+
+    
+
+    }
+
+
+    clicked_label = st_echarts(line_options, key="detail")
+
+
+
+
+    option = {
+        "xAxis": {
+        'data': ['A', 'B', 'C', 'D', 'E']
+  },
+        "yAxis": {},
+         "tooltip": {"trigger": "item"},
+        "series": [
+    { 'name':'Jan',
+      "data": [10, 22, 28, 43, 49],
+      "type": 'bar',
+       "stack": 'zonghe'
+    },
+    { 'name':'Feb',
+      "data": [5, 4, 3, 5, 10],
+      "type": 'bar',
+      "stack": 'zonghe'
+    }
+  ]
+}
+
+
+    clicked_label2 = st_echarts(
+        option,
+        events={"mouseover": "function(params) {return params.name}"},
+        height="500px",
+        key="local",
+    )
+
+    if clicked_label is None:
+        return
+
+    if clicked_label2 is None:
+        return
+
+    
+if __name__ == "__main__":
+    st.set_page_config(
+        page_title="Streamlit ECharts Events Demo", page_icon=":chart_with_upwards_trend:"
+    )
+    st.title("ECharts Events Demo")
+    main()
