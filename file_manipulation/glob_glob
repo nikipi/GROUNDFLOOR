@@ -1,0 +1,35 @@
+import glob
+
+import os
+
+print(os.getcwd())
+
+
+##### make sure your glob is working at the abs path 
+  
+  
+print('Named explicitly:')
+for name in glob.glob('/Users/ypi/opt/anaconda3/python_scripts'):
+    print(name)
+  
+# Using '*' pattern 
+print('\nNamed with wildcard *:')
+for name in glob.glob('/Users/ypi/opt/anaconda3/python_scripts/*'):
+    print(name)
+  
+# Using '?' pattern
+print('\nNamed with wildcard *:')
+for name in glob.glob('/Users/ypi/opt/anaconda3/python_scripts/*.ipynb'):
+    print(name)
+  
+# Using [0-9] pattern
+print('\nNamed with wildcard ranges:')
+for name in glob.glob('/Users/ypi/Desktop/warwick/info/*[0-9].*'):
+    print(name)
+
+
+print("Using glob.glob()")
+files = glob.glob('/Users/ypi/opt/anaconda3/python_scripts/*.ipynb', 
+                   recursive = True)
+for file in files:
+    print(file)
